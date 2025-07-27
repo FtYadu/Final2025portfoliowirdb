@@ -22,7 +22,7 @@ export function LoadingOverlay({ onComplete }: LoadingOverlayProps) {
         Loading Portfolio
       </div>
       
-      <style jsx>{`
+      <style>{`
         .loader {
           width: 60px;
           height: 60px;

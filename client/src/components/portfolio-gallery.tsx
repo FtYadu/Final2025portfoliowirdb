@@ -137,7 +137,7 @@ export function PortfolioGallery() {
         onNavigate={navigateLightbox}
       />
 
-      <style jsx>{`
+      <style>{`
         @media (min-width: 640px) {
           .masonry-grid { column-count: 2; }
         }
