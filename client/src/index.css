@@ -1,0 +1,248 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(222.2, 84%, 4.9%);
+  --muted: hsl(210, 40%, 98%);
+  --muted-foreground: hsl(215.4, 16.3%, 46.9%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(222.2, 84%, 4.9%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(222.2, 84%, 4.9%);
+  --border: hsl(214.3, 31.8%, 91.4%);
+  --input: hsl(214.3, 31.8%, 91.4%);
+  --primary: hsl(222.2, 84%, 4.9%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(210, 40%, 96%);
+  --secondary-foreground: hsl(222.2, 84%, 4.9%);
+  --accent: hsl(210, 40%, 96%);
+  --accent-foreground: hsl(222.2, 84%, 4.9%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(222.2, 84%, 4.9%);
+  --radius: 0.5rem;
+  
+  /* Custom colors */
+  --accent-purple: hsl(259, 76%, 63%);
+  --accent-gold: hsl(43, 74%, 66%);
+  --dark-primary: hsl(240, 10%, 4%);
+  --dark-secondary: hsl(240, 5%, 6%);
+  --dark-accent: hsl(240, 4%, 10%);
+  --light-primary: hsl(0, 0%, 98%);
+  --light-secondary: hsl(210, 20%, 97%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 4%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 4%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(0, 0%, 98%);
+  --primary-foreground: hsl(240, 5.9%, 10%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-inter antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .font-playfair {
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .accent-purple {
+    color: var(--accent-purple);
+  }
+  
+  .bg-accent-purple {
+    background-color: var(--accent-purple);
+  }
+  
+  .accent-gold {
+    color: var(--accent-gold);
+  }
+  
+  .bg-accent-gold {
+    background-color: var(--accent-gold);
+  }
+  
+  .dark-primary {
+    background-color: var(--dark-primary);
+  }
+  
+  .dark-secondary {
+    background-color: var(--dark-secondary);
+  }
+  
+  .dark-accent {
+    background-color: var(--dark-accent);
+  }
+  
+  .light-primary {
+    background-color: var(--light-primary);
+  }
+  
+  .light-secondary {
+    background-color: var(--light-secondary);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .masonry-grid {
+    column-fill: auto;
+  }
+  
+  .masonry-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--accent-purple));
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--accent-purple) / 0.8);
+  }
+  
+  /* Loading animations */
+  .loader {
+    width: 60px;
+    height: 60px;
+    border: 3px solid hsl(var(--accent-purple) / 0.3);
+    border-radius: 50%;
+    border-top-color: hsl(var(--accent-purple));
+    animation: spin 1s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Bounce animation for scroll indicator */
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    40% {
+      transform: translateX(-50%) translateY(-10px);
+    }
+    60% {
+      transform: translateX(-50%) translateY(-5px);
+    }
+  }
+  
+  .animate-bounce {
+    animation: bounce 2s infinite;
+  }
+  
+  /* Gradient text utilities */
+  .gradient-text {
+    @apply bg-gradient-to-r from-accent-purple to-accent-gold bg-clip-text text-transparent;
+  }
+  
+  /* Glassmorphism effect */
+  .glass {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20;
+  }
+  
+  .glass-dark {
+    @apply bg-black/10 backdrop-blur-xl border border-black/20;
+  }
+}
+
+/* GSAP animations will be handled by JavaScript */
+.gsap-fade-in {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.gsap-scale-in {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.gsap-slide-in-left {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.gsap-slide-in-right {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+/* Custom focus styles */
+.focus-visible\:ring-accent-purple:focus-visible {
+  --tw-ring-color: hsl(var(--accent-purple));
+}
+
+/* Ensure proper aspect ratios for images */
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-photo {
+  aspect-ratio: 4 / 3;
+}
+
+.aspect-portrait {
+  aspect-ratio: 3 / 4;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

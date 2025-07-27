@@ -1,0 +1,125 @@
+import { type User, type InsertUser, type PortfolioImage, type InsertPortfolioImage, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
+import { randomUUID } from "crypto";
+
+export interface IStorage {
+  getUser(id: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  
+  getPortfolioImages(limit?: number, offset?: number): Promise<PortfolioImage[]>;
+  getAllPortfolioImages(): Promise<PortfolioImage[]>;
+  createPortfolioImage(image: InsertPortfolioImage): Promise<PortfolioImage>;
+  
+  createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
+}
+
+export class MemStorage implements IStorage {
+  private users: Map<string, User>;
+  private portfolioImages: Map<string, PortfolioImage>;
+  private contactSubmissions: Map<string, ContactSubmission>;
+
+  constructor() {
+    this.users = new Map();
+    this.portfolioImages = new Map();
+    this.contactSubmissions = new Map();
+    
+    // Initialize with portfolio data from the design reference
+    this.initializePortfolioData();
+  }
+
+  private initializePortfolioData() {
+    const portfolioData = [
+      {"filename":"PORTFOLIO - 1873.jpeg","imageurl":"https://lh3.googleusercontent.com/d/12f3g8Ra9ioHT9Grptg_LtwMC_K7D0vUc","caption":"Professional portrait in industrial setting"},
+      {"filename":"PORTFOLIO - 1746.jpeg","imageurl":"https://lh3.googleusercontent.com/d/16ZL63UuU4z4Dc1LEgrFNMdTgRteVSbbP","caption":"Elegant cafe moment captured"},
+      {"filename":"PORTFOLIO - 1535.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1T7YuukIG6iM--i9UHUHM7aQFQ2IMET6e","caption":"Family bonding moment"},
+      {"filename":"PORTFOLIO - 2533.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1Ry5eJf6QBIUac6Q0AzJvwtQmIJKfXCXN","caption":"Adventure motorcycle lifestyle"},
+      {"filename":"PORTFOLIO - 2531.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1uA86cfEDYa8cGe4ooKh0hfN9wrkfHPP1","caption":"Urban motorcycle culture"},
+      {"filename":"PORTFOLIO - 2525.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1bo21jpwj-4_u5rsBooxy0B9WE3UFCXDp","caption":"Festival vibes and ferris wheel"},
+      {"filename":"PORTFOLIO - 2518.jpeg","imageurl":"https://lh3.googleusercontent.com/d/17fUwpVJTKzsPNSkld45Akr5CyWZfzy6G","caption":"Nature and machine harmony"},
+      {"filename":"PORTFOLIO - 2513.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1GTa_ycRbvs7jEPVPFJ4LtWZfqourn1wR","caption":"Golden hour intimate portrait"},
+      {"filename":"PORTFOLIO - 2511.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1v9LaIyONgjV_k2YWjpn6-J5YeLJrdhLh","caption":"Contemplative sunset silhouette"},
+      {"filename":"PORTFOLIO - 2506.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1BypiB5bLfrRwy0ApTxx3kU9g5ygu8R8Z","caption":"Dynamic motorcycle action"},
+      {"filename":"PORTFOLIO - 2503.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1FuiW8qs1K60DN6AEd3OdZ7f5T65JH6aM","caption":"Street photography essence"},
+      {"filename":"PORTFOLIO - 2498.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1KO90KueDG_HQ1BjoFIWBXsgPrV_3Dv2t","caption":"Urban architectural portrait"},
+      {"filename":"PORTFOLIO - 2497.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1QMfBxip-ZE7IC43ZYGXbgIEtw6mGcu1J","caption":"Candid moment captured"},
+      {"filename":"PORTFOLIO - 2496.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1AnsbcQsK1SKTiExdBBheNCRvYWwVEfPN","caption":"Celebration and sparkles"},
+      {"filename":"PORTFOLIO - 2493.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1GoT7rp-RWZURiAoYyVtRx8WYflsCIFOZ","caption":"Colorful artistic expression"},
+      {"filename":"PORTFOLIO - 2492.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1r75NxdxaRExHul4J-IKIZ69IwSdCgCoe","caption":"Holi festival portrait"},
+      {"filename":"PORTFOLIO - 2491.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1-R1Kiztft4aCZaoTzgDq-kDYqzPbjt9H","caption":"Cultural celebration artwork"},
+      {"filename":"PORTFOLIO - 2486.jpeg","imageurl":"https://lh3.googleusercontent.com/d/14et5tYegHPvL2MxT5E-xiRCj-H97Mot7","caption":"Spiritual moment in darkness"},
+      {"filename":"PORTFOLIO - 2470.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1rl-fxsDwpKn20b99LJ_fd0l9_8OlGO0R","caption":"Urban skateboard lifestyle"},
+      {"filename":"PORTFOLIO - 2471.jpeg","imageurl":"https://lh3.googleusercontent.com/d/1vrfYhUV8xcG5VD905wihIoMSk_zNIpUs","caption":"Rain and street culture"},
+      // Expanding the dataset with variations for a richer portfolio
+      {"filename":"PORTFOLIO - 3001.jpeg","imageurl":"https://picsum.photos/800/1200?random=1","caption":"Creative studio lighting"},
+      {"filename":"PORTFOLIO - 3002.jpeg","imageurl":"https://picsum.photos/600/800?random=2","caption":"Environmental portrait session"},
+      {"filename":"PORTFOLIO - 3003.jpeg","imageurl":"https://picsum.photos/900/600?random=3","caption":"Landscape photography exploration"},
+      {"filename":"PORTFOLIO - 3004.jpeg","imageurl":"https://picsum.photos/700/1000?random=4","caption":"Fashion editorial shoot"},
+      {"filename":"PORTFOLIO - 3005.jpeg","imageurl":"https://picsum.photos/800/800?random=5","caption":"Product photography excellence"},
+      {"filename":"PORTFOLIO - 3006.jpeg","imageurl":"https://picsum.photos/600/900?random=6","caption":"Street art documentation"},
+      {"filename":"PORTFOLIO - 3007.jpeg","imageurl":"https://picsum.photos/1000/700?random=7","caption":"Event photography mastery"},
+      {"filename":"PORTFOLIO - 3008.jpeg","imageurl":"https://picsum.photos/750/950?random=8","caption":"Architectural detail focus"},
+      {"filename":"PORTFOLIO - 3009.jpeg","imageurl":"https://picsum.photos/850/650?random=9","caption":"Night photography techniques"},
+      {"filename":"PORTFOLIO - 3010.jpeg","imageurl":"https://picsum.photos/650/850?random=10","caption":"Wildlife and nature capture"}
+    ];
+
+    portfolioData.forEach((item, index) => {
+      const id = randomUUID();
+      const portfolioImage: PortfolioImage = {
+        id,
+        filename: item.filename,
+        imageurl: item.imageurl,
+        caption: item.caption,
+        order: index
+      };
+      this.portfolioImages.set(id, portfolioImage);
+    });
+  }
+
+  async getUser(id: string): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.username === username,
+    );
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const id = randomUUID();
+    const user: User = { ...insertUser, id };
+    this.users.set(id, user);
+    return user;
+  }
+
+  async getPortfolioImages(limit: number = 20, offset: number = 0): Promise<PortfolioImage[]> {
+    const allImages = Array.from(this.portfolioImages.values())
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
+    return allImages.slice(offset, offset + limit);
+  }
+
+  async getAllPortfolioImages(): Promise<PortfolioImage[]> {
+    return Array.from(this.portfolioImages.values())
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
+  }
+
+  async createPortfolioImage(insertImage: InsertPortfolioImage): Promise<PortfolioImage> {
+    const id = randomUUID();
+    const image: PortfolioImage = { ...insertImage, id };
+    this.portfolioImages.set(id, image);
+    return image;
+  }
+
+  async createContactSubmission(insertSubmission: InsertContactSubmission): Promise<ContactSubmission> {
+    const id = randomUUID();
+    const submission: ContactSubmission = { 
+      ...insertSubmission, 
+      id, 
+      submittedAt: new Date().toISOString() 
+    };
+    this.contactSubmissions.set(id, submission);
+    return submission;
+  }
+}
+
+export const storage = new MemStorage();
