@@ -42,14 +42,16 @@ export function AutoScrollToggle() {
   useEffect(() => {
     const handleMouseEnter = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target && target.closest('.masonry-item') && isScrolling) {
+      // Check if target exists and has closest method
+      if (target && typeof target.closest === 'function' && target.closest('.masonry-item') && isScrolling) {
         stopAutoScroll();
       }
     };
 
     const handleMouseLeave = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target && target.closest('.masonry-item') && isScrolling) {
+      // Check if target exists and has closest method
+      if (target && typeof target.closest === 'function' && target.closest('.masonry-item') && isScrolling) {
         startAutoScroll();
       }
     };
