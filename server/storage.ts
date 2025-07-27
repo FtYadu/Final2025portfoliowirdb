@@ -1,6 +1,6 @@
 import { users, portfolioImages, contactSubmissions, blogPosts, type User, type InsertUser, type PortfolioImage, type InsertPortfolioImage, type ContactSubmission, type InsertContactSubmission, type BlogPost, type InsertBlogPost } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -8,8 +8,9 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   
-  getPortfolioImages(limit?: number, offset?: number): Promise<PortfolioImage[]>;
-  getAllPortfolioImages(): Promise<PortfolioImage[]>;
+  getPortfolioImages(limit?: number, offset?: number, category?: string): Promise<PortfolioImage[]>;
+  getAllPortfolioImages(category?: string): Promise<PortfolioImage[]>;
+  getPortfolioCategories(): Promise<{category: string, count: number}[]>;
   createPortfolioImage(image: InsertPortfolioImage): Promise<PortfolioImage>;
   
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
@@ -42,18 +43,38 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async getPortfolioImages(limit: number = 20, offset: number = 0): Promise<PortfolioImage[]> {
-    const images = await db
-      .select()
-      .from(portfolioImages)
-      .limit(limit)
-      .offset(offset);
+  async getPortfolioImages(limit: number = 20, offset: number = 0, category?: string): Promise<PortfolioImage[]> {
+    let query = db.select().from(portfolioImages);
+    
+    if (category && category !== 'all') {
+      query = query.where(eq(portfolioImages.category, category));
+    }
+    
+    const images = await query.limit(limit).offset(offset);
     return images;
   }
 
-  async getAllPortfolioImages(): Promise<PortfolioImage[]> {
-    const images = await db.select().from(portfolioImages);
+  async getAllPortfolioImages(category?: string): Promise<PortfolioImage[]> {
+    let query = db.select().from(portfolioImages);
+    
+    if (category && category !== 'all') {
+      query = query.where(eq(portfolioImages.category, category));
+    }
+    
+    const images = await query;
     return images;
+  }
+
+  async getPortfolioCategories(): Promise<{category: string, count: number}[]> {
+    const result = await db
+      .select({
+        category: portfolioImages.category,
+        count: sql<number>`count(*)`
+      })
+      .from(portfolioImages)
+      .groupBy(portfolioImages.category);
+    
+    return result.map(r => ({ category: r.category, count: Number(r.count) }));
   }
 
   async createPortfolioImage(insertImage: InsertPortfolioImage): Promise<PortfolioImage> {

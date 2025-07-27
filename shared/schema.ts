@@ -11,6 +11,8 @@ export const portfolioImages = pgTable("portfolio_images", {
   order: integer("order").default(0),
   type: text("type").notNull().default("image"), // 'image' or 'video'
   videoId: text("video_id"), // For Vimeo videos
+  category: text("category").notNull().default("photography"), // photography, portrait, landscape, commercial, personal
+  tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`), // searchable tags
 });
 
 export const contactSubmissions = pgTable("contact_submissions", {

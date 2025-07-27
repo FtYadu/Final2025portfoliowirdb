@@ -177,18 +177,64 @@ export const animations = {
     });
   },
 
+  // Category filtering animations
+  fadeOut: (elements: Element[]) => {
+    return new Promise<void>((resolve) => {
+      gsap.to(elements, {
+        opacity: 0,
+        y: -30,
+        scale: 0.9,
+        duration: 0.4,
+        stagger: 0.05,
+        ease: "power2.in",
+        onComplete: resolve
+      });
+    });
+  },
+
+  fadeIn: (elements: Element[]) => {
+    return gsap.fromTo(
+      elements,
+      { 
+        opacity: 0, 
+        y: 30, 
+        scale: 0.9 
+      },
+      { 
+        opacity: 1, 
+        y: 0, 
+        scale: 1,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: "power3.out"
+      }
+    );
+  },
+
+  // Enhanced category filter animations
+  categoryFilterAnimation: (activeButton: Element) => {
+    return gsap.to(activeButton, {
+      scale: 1.1,
+      duration: 0.2,
+      ease: "power2.out",
+      yoyo: true,
+      repeat: 1
+    });
+  },
+
   // Scroll-triggered animations
   initScrollAnimations: () => {
     // Gallery items batch animation
-    ScrollTrigger.batch(".masonry-item", {
+    ScrollTrigger.batch(".gallery-item", {
       onEnter: (elements) => {
         gsap.fromTo(
           elements,
-          { y: 100, opacity: 0 },
+          { y: 100, opacity: 0, scale: 0.8 },
           { 
             y: 0, 
             opacity: 1, 
-            duration: 0.6, 
+            scale: 1,
+            duration: 0.8, 
             stagger: 0.1, 
             ease: "power3.out" 
           }

@@ -1,10 +1,21 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Images, Play } from "lucide-react";
+import { Images, Play, Grid, Filter } from "lucide-react";
 import { animations } from "@/lib/gsap-utils";
 import { shuffleArray } from "@/lib/portfolio-data";
 import { Lightbox } from "./lightbox";
 import type { PortfolioImage } from "@shared/schema";
+
+const categories = [
+  { id: 'all', label: 'All Work', color: 'from-purple-500 to-blue-500' },
+  { id: 'portrait', label: 'Portraits', color: 'from-orange-500 to-pink-500' },
+  { id: 'landscape', label: 'Landscapes', color: 'from-green-500 to-teal-500' },
+  { id: 'automotive', label: 'Automotive', color: 'from-red-500 to-orange-500' },
+  { id: 'wedding', label: 'Weddings', color: 'from-pink-500 to-rose-500' },
+  { id: 'sports', label: 'Sports', color: 'from-blue-500 to-indigo-500' },
+  { id: 'creative', label: 'Creative', color: 'from-purple-500 to-violet-500' },
+  { id: 'photography', label: 'General', color: 'from-gray-500 to-slate-500' }
+];
 
 export function PortfolioGallery() {
   const [displayedMedia, setDisplayedMedia] = useState<PortfolioImage[]>([]);
@@ -12,7 +23,10 @@ export function PortfolioGallery() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isFilterTransitioning, setIsFilterTransitioning] = useState(false);
   const galleryRef = useRef<HTMLDivElement>(null);
+  const categoryFilterRef = useRef<HTMLDivElement>(null);
   const mediaPerPage = 20;
 
   const { data: allImages = [], isLoading: imagesLoading } = useQuery<PortfolioImage[]>({
@@ -27,13 +41,56 @@ export function PortfolioGallery() {
   const allMedia = useMemo(() => [...allImages, ...vimeoVideos], [allImages, vimeoVideos]);
   const isLoading = imagesLoading || videosLoading;
 
+  // Filter media by selected category
+  const filteredMedia = useMemo(() => {
+    if (selectedCategory === 'all') return allMedia;
+    return allMedia.filter(item => item.category === selectedCategory);
+  }, [allMedia, selectedCategory]);
+
   useEffect(() => {
-    if (allMedia.length > 0 && !hasInitialized) {
-      const shuffled = shuffleArray(allMedia);
+    if (filteredMedia.length > 0 && !hasInitialized) {
+      const shuffled = shuffleArray(filteredMedia);
       setDisplayedMedia(shuffled.slice(0, mediaPerPage));
       setHasInitialized(true);
     }
-  }, [allMedia, hasInitialized]);
+  }, [filteredMedia, hasInitialized]);
+
+  // Handle category changes with GSAP transitions
+  const handleCategoryChange = async (categoryId: string) => {
+    if (categoryId === selectedCategory || isFilterTransitioning) return;
+    
+    setIsFilterTransitioning(true);
+    
+    // Animate button press
+    const activeButton = categoryFilterRef.current?.querySelector(`[data-category="${categoryId}"]`);
+    if (activeButton) {
+      animations.categoryFilterAnimation(activeButton);
+    }
+    
+    // Animate out current items
+    if (galleryRef.current) {
+      const items = galleryRef.current.querySelectorAll('.gallery-item');
+      await animations.fadeOut(Array.from(items));
+    }
+    
+    // Update category and reset page
+    setSelectedCategory(categoryId);
+    setCurrentPage(0);
+    
+    // Get new filtered data
+    const newFiltered = categoryId === 'all' ? allMedia : allMedia.filter(item => item.category === categoryId);
+    const shuffled = shuffleArray(newFiltered);
+    setDisplayedMedia(shuffled.slice(0, mediaPerPage));
+    
+    // Animate in new items with delay
+    setTimeout(() => {
+      if (galleryRef.current) {
+        const items = galleryRef.current.querySelectorAll('.gallery-item');
+        animations.fadeIn(Array.from(items));
+      }
+      setIsFilterTransitioning(false);
+    }, 200);
+  };
 
   useEffect(() => {
     // Initialize scroll animations when component mounts
@@ -41,7 +98,7 @@ export function PortfolioGallery() {
   }, []);
 
   const loadMoreMedia = () => {
-    const shuffled = shuffleArray(allMedia);
+    const shuffled = shuffleArray(filteredMedia);
     const nextPage = currentPage + 1;
     const startIndex = nextPage * mediaPerPage;
     const endIndex = startIndex + mediaPerPage;
@@ -89,9 +146,43 @@ export function PortfolioGallery() {
           <h2 className="section-title font-oswald text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-accent-purple to-accent-gold bg-clip-text text-transparent uppercase tracking-wider">
             Portfolio Gallery
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-space font-light">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-space font-light mb-8">
             A curated collection of visual stories, creative expressions, and artistic endeavors
           </p>
+          
+          {/* Category Filter */}
+          <div 
+            ref={categoryFilterRef}
+            className="flex flex-wrap justify-center gap-3 mb-8 max-w-4xl mx-auto"
+          >
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                data-category={category.id}
+                onClick={() => handleCategoryChange(category.id)}
+                disabled={isFilterTransitioning}
+                className={`
+                  px-6 py-3 rounded-full font-medium transition-all duration-300 hover:scale-105
+                  ${selectedCategory === category.id 
+                    ? `bg-gradient-to-r ${category.color} text-white shadow-lg` 
+                    : 'bg-white/10 backdrop-blur-sm border border-white/20 text-gray-300 hover:bg-white/20'
+                  }
+                  ${isFilterTransitioning ? 'opacity-50 cursor-not-allowed' : ''}
+                `}
+              >
+                <span className="flex items-center gap-2">
+                  {category.id === 'all' && <Grid className="w-4 h-4" />}
+                  {category.id !== 'all' && <Filter className="w-4 h-4" />}
+                  {category.label}
+                  {selectedCategory === category.id && (
+                    <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs">
+                      {filteredMedia.length}
+                    </span>
+                  )}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
         
         <div 
@@ -101,7 +192,7 @@ export function PortfolioGallery() {
           {displayedMedia.map((media, index) => (
             <div
               key={`${media.id}-${index}`}
-              className="relative mb-2 md:mb-3 break-inside-avoid cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:z-10 group"
+              className="gallery-item relative mb-2 md:mb-3 break-inside-avoid cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:z-10 group"
               onClick={() => openLightbox(index)}
             >
               <img
@@ -120,6 +211,17 @@ export function PortfolioGallery() {
                   </div>
                 </div>
               )}
+              {/* Category badge */}
+              <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span className={`
+                  px-2 py-1 text-xs font-medium rounded-full bg-gradient-to-r 
+                  ${categories.find(cat => cat.id === media.category)?.color || 'from-gray-500 to-slate-500'}
+                  text-white shadow-lg backdrop-blur-sm
+                `}>
+                  {categories.find(cat => cat.id === media.category)?.label || 'General'}
+                </span>
+              </div>
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 rounded-lg">
                 <p className="text-white text-xs font-medium line-clamp-2">{media.caption}</p>
               </div>
@@ -127,17 +229,23 @@ export function PortfolioGallery() {
           ))}
         </div>
         
-        {displayedMedia.length < allMedia.length && (
-          <div className="text-center mt-12">
+        {/* Results count and Load More section */}
+        <div className="text-center mt-12 space-y-4">
+          <div className="text-sm text-muted-foreground">
+            Showing {displayedMedia.length} of {filteredMedia.length} {selectedCategory === 'all' ? 'items' : categories.find(cat => cat.id === selectedCategory)?.label.toLowerCase()}
+          </div>
+          
+          {displayedMedia.length < filteredMedia.length && (
             <button
               onClick={loadMoreMedia}
-              className="px-8 py-3 bg-accent-purple hover:bg-accent-purple/80 rounded-full font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 mx-auto"
+              disabled={isFilterTransitioning}
+              className="px-8 py-3 bg-accent-purple hover:bg-accent-purple/80 rounded-full font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Images className="w-5 h-5" />
               Load More
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <Lightbox

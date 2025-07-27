@@ -10,7 +10,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
-      const images = await storage.getPortfolioImages(limit, offset);
+      const category = req.query.category as string;
+      const images = await storage.getPortfolioImages(limit, offset, category);
       res.json(images);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch portfolio images" });
@@ -19,10 +20,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/portfolio/all", async (req, res) => {
     try {
-      const images = await storage.getAllPortfolioImages();
+      const category = req.query.category as string;
+      const images = await storage.getAllPortfolioImages(category);
       res.json(images);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch all portfolio images" });
+    }
+  });
+
+  // Portfolio categories API
+  app.get("/api/portfolio/categories", async (req, res) => {
+    try {
+      const categories = await storage.getPortfolioCategories();
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch portfolio categories" });
     }
   });
 
