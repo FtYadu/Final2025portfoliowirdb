@@ -41,13 +41,15 @@ export function AutoScrollToggle() {
   // Pause auto scroll on hover over gallery items
   useEffect(() => {
     const handleMouseEnter = (e: MouseEvent) => {
-      if ((e.target as Element)?.closest('.masonry-item') && isScrolling) {
+      const target = e.target as HTMLElement;
+      if (target && target.closest('.masonry-item') && isScrolling) {
         stopAutoScroll();
       }
     };
 
     const handleMouseLeave = (e: MouseEvent) => {
-      if ((e.target as Element)?.closest('.masonry-item') && isScrolling) {
+      const target = e.target as HTMLElement;
+      if (target && target.closest('.masonry-item') && isScrolling) {
         startAutoScroll();
       }
     };

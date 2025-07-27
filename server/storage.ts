@@ -1,5 +1,6 @@
-import { type User, type InsertUser, type PortfolioImage, type InsertPortfolioImage, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { users, portfolioImages, contactSubmissions, type User, type InsertUser, type PortfolioImage, type InsertPortfolioImage, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -13,6 +14,57 @@ export interface IStorage {
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
 }
 
+export class DatabaseStorage implements IStorage {
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getPortfolioImages(limit: number = 20, offset: number = 0): Promise<PortfolioImage[]> {
+    const images = await db
+      .select()
+      .from(portfolioImages)
+      .limit(limit)
+      .offset(offset);
+    return images;
+  }
+
+  async getAllPortfolioImages(): Promise<PortfolioImage[]> {
+    const images = await db.select().from(portfolioImages);
+    return images;
+  }
+
+  async createPortfolioImage(insertImage: InsertPortfolioImage): Promise<PortfolioImage> {
+    const [image] = await db
+      .insert(portfolioImages)
+      .values(insertImage)
+      .returning();
+    return image;
+  }
+
+  async createContactSubmission(insertSubmission: InsertContactSubmission): Promise<ContactSubmission> {
+    const [submission] = await db
+      .insert(contactSubmissions)
+      .values(insertSubmission)
+      .returning();
+    return submission;
+  }
+}
+
+// Legacy memory storage class for fallback
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private portfolioImages: Map<string, PortfolioImage>;
@@ -122,4 +174,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
