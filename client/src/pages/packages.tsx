@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { NavMenu } from "@/components/nav-menu";
-import { SocialDock } from "@/components/social-dock";
+import { SpiralSocialDock } from "@/components/spiral-social-dock";
 import { Check, Camera, Users, Clock, Star } from "lucide-react";
 import type { PortfolioImage } from "@shared/schema";
 
@@ -78,7 +78,7 @@ export default function Packages() {
   return (
     <>
       <NavMenu isScrolling={isScrolling} onToggleScroll={() => setIsScrolling(!isScrolling)} />
-      <SocialDock />
+      <SpiralSocialDock />
       
       <main className="min-h-screen bg-background">
         {/* Hero Section with Portfolio Images */}

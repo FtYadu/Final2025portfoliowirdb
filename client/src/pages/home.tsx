@@ -3,7 +3,7 @@ import { HeroSection } from "@/components/hero-section";
 import { PortfolioGallery } from "@/components/portfolio-gallery";
 import { ContactSection } from "@/components/contact-section";
 import { LoadingOverlay } from "@/components/loading-overlay";
-import { SocialDock } from "@/components/social-dock";
+import { SpiralSocialDock } from "@/components/spiral-social-dock";
 import { NavMenu } from "@/components/nav-menu";
 
 export default function Home() {
@@ -52,7 +52,7 @@ export default function Home() {
       {isLoading && <LoadingOverlay onComplete={() => setIsLoading(false)} />}
       
       <NavMenu isScrolling={isScrolling} onToggleScroll={toggleAutoScroll} />
-      <SocialDock />
+      <SpiralSocialDock />
       
       <main className="min-h-screen">
         <HeroSection />
