@@ -86,24 +86,24 @@ export function PortfolioGallery() {
         
         <div 
           ref={galleryRef}
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3"
+          className="columns-2 sm:columns-3 lg:columns-4 gap-2 md:gap-3"
         >
           {displayedImages.map((image, index) => (
             <div
               key={`${image.id}-${index}`}
-              className="relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:z-10 group aspect-[4/3]"
+              className="relative mb-2 md:mb-3 break-inside-avoid cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:z-10 group"
               onClick={() => openLightbox(index)}
             >
               <img
                 src={image.imageurl}
                 alt={image.caption}
-                className="w-full h-full object-cover"
+                className="w-full h-auto rounded-lg"
                 loading="lazy"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 rounded-lg">
                 <p className="text-white text-xs font-medium line-clamp-2">{image.caption}</p>
               </div>
             </div>
