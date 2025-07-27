@@ -1,48 +1,58 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Images } from "lucide-react";
+import { Images, Play } from "lucide-react";
 import { animations } from "@/lib/gsap-utils";
 import { shuffleArray } from "@/lib/portfolio-data";
 import { Lightbox } from "./lightbox";
 import type { PortfolioImage } from "@shared/schema";
 
 export function PortfolioGallery() {
-  const [displayedImages, setDisplayedImages] = useState<PortfolioImage[]>([]);
+  const [displayedMedia, setDisplayedMedia] = useState<PortfolioImage[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const [hasInitialized, setHasInitialized] = useState(false);
   const galleryRef = useRef<HTMLDivElement>(null);
-  const imagesPerPage = 20;
+  const mediaPerPage = 20;
 
-  const { data: allImages = [], isLoading } = useQuery<PortfolioImage[]>({
+  const { data: allImages = [], isLoading: imagesLoading } = useQuery<PortfolioImage[]>({
     queryKey: ['/api/portfolio/all'],
   });
 
+  const { data: vimeoVideos = [], isLoading: videosLoading } = useQuery<PortfolioImage[]>({
+    queryKey: ['/api/vimeo/videos'],
+  });
+
+  // Combine images and videos using useMemo to prevent infinite loops
+  const allMedia = useMemo(() => [...allImages, ...vimeoVideos], [allImages, vimeoVideos]);
+  const isLoading = imagesLoading || videosLoading;
+
   useEffect(() => {
-    if (allImages.length > 0) {
-      const shuffled = shuffleArray(allImages);
-      setDisplayedImages(shuffled.slice(0, imagesPerPage));
+    if (allMedia.length > 0 && !hasInitialized) {
+      const shuffled = shuffleArray(allMedia);
+      setDisplayedMedia(shuffled.slice(0, mediaPerPage));
+      setHasInitialized(true);
     }
-  }, [allImages]);
+  }, [allMedia, hasInitialized]);
 
   useEffect(() => {
     // Initialize scroll animations when component mounts
     animations.initScrollAnimations();
   }, []);
 
-  const loadMoreImages = () => {
-    const shuffled = shuffleArray(allImages);
+  const loadMoreMedia = () => {
+    const shuffled = shuffleArray(allMedia);
     const nextPage = currentPage + 1;
-    const startIndex = nextPage * imagesPerPage;
-    const endIndex = startIndex + imagesPerPage;
-    const newImages = shuffled.slice(startIndex, endIndex);
+    const startIndex = nextPage * mediaPerPage;
+    const endIndex = startIndex + mediaPerPage;
+    const newMedia = shuffled.slice(startIndex, endIndex);
     
-    setDisplayedImages(prev => [...prev, ...newImages]);
+    setDisplayedMedia(prev => [...prev, ...newMedia]);
     setCurrentPage(nextPage);
   };
 
   const openLightbox = (index: number) => {
-    setCurrentImageIndex(index);
+    setCurrentMediaIndex(index);
     setLightboxOpen(true);
   };
 
@@ -52,9 +62,9 @@ export function PortfolioGallery() {
 
   const navigateLightbox = (direction: 'prev' | 'next') => {
     if (direction === 'prev') {
-      setCurrentImageIndex(prev => prev > 0 ? prev - 1 : displayedImages.length - 1);
+      setCurrentMediaIndex(prev => prev > 0 ? prev - 1 : displayedMedia.length - 1);
     } else {
-      setCurrentImageIndex(prev => prev < displayedImages.length - 1 ? prev + 1 : 0);
+      setCurrentMediaIndex(prev => prev < displayedMedia.length - 1 ? prev + 1 : 0);
     }
   };
 
@@ -88,32 +98,39 @@ export function PortfolioGallery() {
           ref={galleryRef}
           className="columns-2 sm:columns-3 lg:columns-4 gap-2 md:gap-3"
         >
-          {displayedImages.map((image, index) => (
+          {displayedMedia.map((media, index) => (
             <div
-              key={`${image.id}-${index}`}
+              key={`${media.id}-${index}`}
               className="relative mb-2 md:mb-3 break-inside-avoid cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:z-10 group"
               onClick={() => openLightbox(index)}
             >
               <img
-                src={image.imageurl}
-                alt={image.caption}
+                src={media.imageurl}
+                alt={media.caption}
                 className="w-full h-auto rounded-lg"
                 loading="lazy"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
               />
+              {media.type === 'video' && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg">
+                  <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                    <Play className="w-8 h-8 text-gray-900 ml-1" />
+                  </div>
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 rounded-lg">
-                <p className="text-white text-xs font-medium line-clamp-2">{image.caption}</p>
+                <p className="text-white text-xs font-medium line-clamp-2">{media.caption}</p>
               </div>
             </div>
           ))}
         </div>
         
-        {displayedImages.length < allImages.length && (
+        {displayedMedia.length < allMedia.length && (
           <div className="text-center mt-12">
             <button
-              onClick={loadMoreImages}
+              onClick={loadMoreMedia}
               className="px-8 py-3 bg-accent-purple hover:bg-accent-purple/80 rounded-full font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 mx-auto"
             >
               <Images className="w-5 h-5" />
@@ -126,8 +143,8 @@ export function PortfolioGallery() {
       <Lightbox
         isOpen={lightboxOpen}
         onClose={closeLightbox}
-        images={displayedImages}
-        currentIndex={currentImageIndex}
+        images={displayedMedia}
+        currentIndex={currentMediaIndex}
         onNavigate={navigateLightbox}
       />
       

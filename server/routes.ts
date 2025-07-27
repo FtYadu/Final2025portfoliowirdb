@@ -55,6 +55,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
+  // Blog routes
+  app.get("/api/blog/posts", async (req, res) => {
+    try {
+      const posts = await storage.getPublishedBlogPosts();
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching blog posts:", error);
+      res.status(500).json({ error: "Failed to fetch blog posts" });
+    }
+  });
+
+  app.get("/api/blog/posts/:slug", async (req, res) => {
+    try {
+      const post = await storage.getBlogPostBySlug(req.params.slug);
+      if (!post) {
+        return res.status(404).json({ error: "Blog post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      console.error("Error fetching blog post:", error);
+      res.status(500).json({ error: "Failed to fetch blog post" });
+    }
+  });
+
+  // CV download route
+  app.get("/api/cv/download", (req, res) => {
+    // Return CV information
+    res.json({ 
+      url: "/attached_assets/yadu-krishna-cv.pdf",
+      name: "Yadu_Krishna_CV.pdf"
+    });
+  });
+
+  // Vimeo videos route
+  app.get("/api/vimeo/videos", async (req, res) => {
+    try {
+      // Sample Vimeo videos data - in production, this would fetch from Vimeo API
+      const vimeoVideos = [
+        {
+          id: "video-1",
+          filename: "Creative Showcase Reel",
+          imageurl: "https://i.vimeocdn.com/video/1234567890_1280x720.jpg",
+          caption: "My latest creative showcase featuring visual storytelling",
+          type: "video",
+          videoId: "824804225", // Example Vimeo video ID
+          order: 1
+        },
+        {
+          id: "video-2", 
+          filename: "Behind the Scenes",
+          imageurl: "https://i.vimeocdn.com/video/0987654321_1280x720.jpg",
+          caption: "Behind the scenes of a recent photoshoot",
+          type: "video",
+          videoId: "824804226", // Example Vimeo video ID
+          order: 2
+        }
+      ];
+      
+      res.json(vimeoVideos);
+    } catch (error) {
+      console.error("Error fetching Vimeo videos:", error);
+      res.status(500).json({ error: "Failed to fetch videos" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -9,6 +9,8 @@ export const portfolioImages = pgTable("portfolio_images", {
   imageurl: text("imageurl").notNull(),
   caption: text("caption").notNull(),
   order: integer("order").default(0),
+  type: text("type").notNull().default("image"), // 'image' or 'video'
+  videoId: text("video_id"), // For Vimeo videos
 });
 
 export const contactSubmissions = pgTable("contact_submissions", {
@@ -47,3 +49,29 @@ export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Blog posts table
+export const blogPosts = pgTable("blog_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  slug: text("slug").unique().notNull(),
+  excerpt: text("excerpt").notNull(),
+  content: text("content").notNull(),
+  coverImage: text("cover_image").notNull(),
+  category: text("category").notNull(),
+  tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
+  author: text("author").notNull().default("Yadu Krishna"),
+  published: integer("published").notNull().default(0), // 0 = draft, 1 = published
+  readTime: integer("read_time").notNull().default(5),
+  createdAt: varchar("created_at").default(sql`now()`),
+  updatedAt: varchar("updated_at").default(sql`now()`),
+});
+
+export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;

@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
-import { ChevronDown, MessageCircle, Calendar } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronDown, MessageCircle, Calendar, Download } from "lucide-react";
 import { animations } from "@/lib/gsap-utils";
 import { socialLinks } from "@/lib/portfolio-data";
+import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   const heroRef = useRef<HTMLElement>(null);
@@ -9,6 +10,21 @@ export function HeroSection() {
   useEffect(() => {
     animations.heroAnimation();
   }, []);
+
+  const handleCVDownload = async () => {
+    try {
+      const response = await fetch('/api/cv/download');
+      const data = await response.json();
+      
+      // Create a temporary link to download
+      const link = document.createElement('a');
+      link.href = data.url;
+      link.download = data.name;
+      link.click();
+    } catch (error) {
+      console.error('Error downloading CV:', error);
+    }
+  };
 
   return (
     <section 
@@ -51,10 +67,17 @@ export function HeroSection() {
             <Calendar className="w-5 h-5" />
             Schedule Meeting
           </a>
+          <button
+            onClick={handleCVDownload}
+            className="px-8 py-3 border border-white/30 hover:bg-white/10 rounded-full font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2"
+          >
+            <Download className="w-5 h-5" />
+            Download CV
+          </button>
         </div>
       </div>
       
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 animate-bounce">
         <ChevronDown className="w-8 h-8 text-white/70" />
       </div>
     </section>

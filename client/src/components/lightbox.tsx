@@ -14,10 +14,14 @@ interface LightboxProps {
 export function Lightbox({ isOpen, onClose, images, currentIndex, onNavigate }: LightboxProps) {
   const lightboxRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+  const videoRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    if (isOpen && lightboxRef.current && imageRef.current) {
-      animations.lightboxOpen(lightboxRef.current, imageRef.current);
+    if (isOpen && lightboxRef.current) {
+      const mediaElement = imageRef.current || videoRef.current;
+      if (mediaElement) {
+        animations.lightboxOpen(lightboxRef.current, mediaElement);
+      }
     }
   }, [isOpen, currentIndex]);
 
@@ -43,8 +47,13 @@ export function Lightbox({ isOpen, onClose, images, currentIndex, onNavigate }: 
   }, [isOpen, onNavigate]);
 
   const handleClose = () => {
-    if (lightboxRef.current && imageRef.current) {
-      animations.lightboxClose(lightboxRef.current, imageRef.current, onClose);
+    if (lightboxRef.current) {
+      const mediaElement = imageRef.current || videoRef.current;
+      if (mediaElement) {
+        animations.lightboxClose(lightboxRef.current, mediaElement, onClose);
+      } else {
+        onClose();
+      }
     } else {
       onClose();
     }
@@ -61,13 +70,23 @@ export function Lightbox({ isOpen, onClose, images, currentIndex, onNavigate }: 
       onClick={handleClose}
       style={{ display: 'none' }}
     >
-      <img
-        ref={imageRef}
-        src={currentImage.imageurl}
-        alt={currentImage.caption}
-        className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
-        onClick={(e) => e.stopPropagation()}
-      />
+      {currentImage.type === 'video' ? (
+        <iframe
+          ref={videoRef}
+          src={`https://player.vimeo.com/video/${currentImage.imageurl.split('/').pop()}`}
+          className="w-[90vw] h-[90vh] max-w-[1200px] max-h-[800px] rounded-lg"
+          allow="autoplay; fullscreen; picture-in-picture"
+          onClick={(e) => e.stopPropagation()}
+        />
+      ) : (
+        <img
+          ref={imageRef}
+          src={currentImage.imageurl}
+          alt={currentImage.caption}
+          className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+          onClick={(e) => e.stopPropagation()}
+        />
+      )}
       
       <button
         onClick={handleClose}

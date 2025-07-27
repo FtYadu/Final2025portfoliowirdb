@@ -1,6 +1,7 @@
-import { users, portfolioImages, contactSubmissions, type User, type InsertUser, type PortfolioImage, type InsertPortfolioImage, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
+import { users, portfolioImages, contactSubmissions, blogPosts, type User, type InsertUser, type PortfolioImage, type InsertPortfolioImage, type ContactSubmission, type InsertContactSubmission, type BlogPost, type InsertBlogPost } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
+import { randomUUID } from "crypto";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -12,6 +13,14 @@ export interface IStorage {
   createPortfolioImage(image: InsertPortfolioImage): Promise<PortfolioImage>;
   
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
+  
+  // Blog methods
+  getAllBlogPosts(): Promise<BlogPost[]>;
+  getPublishedBlogPosts(): Promise<BlogPost[]>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  updateBlogPost(id: string, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
+  deleteBlogPost(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -62,6 +71,52 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return submission;
   }
+
+  // Blog methods implementation
+  async getAllBlogPosts(): Promise<BlogPost[]> {
+    const posts = await db.select().from(blogPosts).orderBy(blogPosts.createdAt);
+    return posts;
+  }
+
+  async getPublishedBlogPosts(): Promise<BlogPost[]> {
+    const posts = await db
+      .select()
+      .from(blogPosts)
+      .where(eq(blogPosts.published, 1))
+      .orderBy(blogPosts.createdAt);
+    return posts;
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+    return post || undefined;
+  }
+
+  async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
+    const [post] = await db
+      .insert(blogPosts)
+      .values(insertPost)
+      .returning();
+    return post;
+  }
+
+  async updateBlogPost(id: string, updateData: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    const [post] = await db
+      .update(blogPosts)
+      .set(updateData)
+      .where(eq(blogPosts.id, id))
+      .returning();
+    return post || undefined;
+  }
+
+  async deleteBlogPost(id: string): Promise<boolean> {
+    try {
+      await db.delete(blogPosts).where(eq(blogPosts.id, id));
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }
 
 // Legacy memory storage class for fallback
@@ -69,14 +124,17 @@ export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private portfolioImages: Map<string, PortfolioImage>;
   private contactSubmissions: Map<string, ContactSubmission>;
+  private blogPosts: Map<string, BlogPost>;
 
   constructor() {
     this.users = new Map();
     this.portfolioImages = new Map();
     this.contactSubmissions = new Map();
+    this.blogPosts = new Map();
     
     // Initialize with portfolio data from the design reference
     this.initializePortfolioData();
+    this.initializeBlogData();
   }
 
   private initializePortfolioData() {
@@ -171,6 +229,90 @@ export class MemStorage implements IStorage {
     };
     this.contactSubmissions.set(id, submission);
     return submission;
+  }
+
+  private initializeBlogData() {
+    const samplePosts: BlogPost[] = [
+      {
+        id: randomUUID(),
+        title: "The Art of Visual Storytelling",
+        slug: "art-of-visual-storytelling",
+        excerpt: "Exploring how photography transcends mere documentation to become a powerful narrative medium.",
+        content: "Photography is more than capturing moments; it's about weaving stories that resonate with viewers...",
+        coverImage: "https://picsum.photos/1200/600?random=20",
+        category: "Photography",
+        tags: ["storytelling", "photography", "creativity"],
+        author: "Yadu Krishna",
+        published: 1,
+        readTime: 5,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: randomUUID(),
+        title: "Behind the Lens: Wedding Photography",
+        slug: "behind-lens-wedding-photography",
+        excerpt: "A deep dive into capturing the most precious moments of a couple's special day.",
+        content: "Wedding photography is about anticipating emotions and preserving memories...",
+        coverImage: "https://picsum.photos/1200/600?random=21",
+        category: "Wedding",
+        tags: ["wedding", "photography", "tips"],
+        author: "Yadu Krishna",
+        published: 1,
+        readTime: 7,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    samplePosts.forEach(post => {
+      this.blogPosts.set(post.id, post);
+    });
+  }
+
+  // Blog methods implementation
+  async getAllBlogPosts(): Promise<BlogPost[]> {
+    return Array.from(this.blogPosts.values())
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async getPublishedBlogPosts(): Promise<BlogPost[]> {
+    return Array.from(this.blogPosts.values())
+      .filter(post => post.published === 1)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    return Array.from(this.blogPosts.values()).find(post => post.slug === slug);
+  }
+
+  async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
+    const id = randomUUID();
+    const post: BlogPost = {
+      ...insertPost,
+      id,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    this.blogPosts.set(id, post);
+    return post;
+  }
+
+  async updateBlogPost(id: string, updateData: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    const post = this.blogPosts.get(id);
+    if (!post) return undefined;
+    
+    const updated: BlogPost = {
+      ...post,
+      ...updateData,
+      updatedAt: new Date().toISOString()
+    };
+    this.blogPosts.set(id, updated);
+    return updated;
+  }
+
+  async deleteBlogPost(id: string): Promise<boolean> {
+    return this.blogPosts.delete(id);
   }
 }
 

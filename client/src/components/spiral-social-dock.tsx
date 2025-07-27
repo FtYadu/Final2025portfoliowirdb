@@ -99,13 +99,13 @@ export function SpiralSocialDock() {
       {/* Central trigger button */}
       <button
         onClick={toggleOpen}
-        className="relative z-10 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center text-white shadow-lg transition-all duration-300 hover:scale-110"
+        className="relative z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-gray-700 dark:text-gray-300 shadow-sm transition-all duration-300 hover:scale-110 hover:bg-white/20"
         style={{
-          boxShadow: isOpen ? '0 0 30px rgba(168, 85, 247, 0.5)' : '0 4px 20px rgba(0,0,0,0.2)'
+          boxShadow: isOpen ? '0 0 20px rgba(255, 255, 255, 0.3)' : '0 2px 10px rgba(0,0,0,0.1)'
         }}
       >
         <Share2 
-          className={`w-6 h-6 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
 
