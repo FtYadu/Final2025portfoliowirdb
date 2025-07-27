@@ -70,47 +70,41 @@ export function PortfolioGallery() {
   }
 
   return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="section-title font-playfair text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-accent-purple to-accent-gold bg-clip-text text-transparent">
+    <section className="relative py-0 bg-background">
+      {/* Gradient overlay at top */}
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
+      
+      <div className="container mx-auto px-4 relative">
+        <div className="text-center mb-8 pt-20">
+          <h2 className="section-title font-oswald text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-accent-purple to-accent-gold bg-clip-text text-transparent uppercase tracking-wider">
             Portfolio Gallery
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-space font-light">
             A curated collection of visual stories, creative expressions, and artistic endeavors
           </p>
         </div>
         
         <div 
           ref={galleryRef}
-          className="masonry-grid"
-          style={{
-            columnCount: 1,
-            columnGap: '1rem',
-            columnFill: 'auto',
-          }}
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3"
         >
           {displayedImages.map((image, index) => (
             <div
               key={`${image.id}-${index}`}
-              className="masonry-item break-inside-avoid mb-4 relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl group"
+              className="relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:z-10 group aspect-[4/3]"
               onClick={() => openLightbox(index)}
             >
               <img
                 src={image.imageurl}
                 alt={image.caption}
-                className="w-full h-auto object-cover"
+                className="w-full h-full object-cover"
                 loading="lazy"
-                style={{
-                  height: `${Math.floor(Math.random() * 200) + 250}px`,
-                  objectFit: 'cover'
-                }}
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                <p className="text-white text-sm font-medium">{image.caption}</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                <p className="text-white text-xs font-medium line-clamp-2">{image.caption}</p>
               </div>
             </div>
           ))}
@@ -136,18 +130,9 @@ export function PortfolioGallery() {
         currentIndex={currentImageIndex}
         onNavigate={navigateLightbox}
       />
-
-      <style>{`
-        @media (min-width: 640px) {
-          .masonry-grid { column-count: 2; }
-        }
-        @media (min-width: 1024px) {
-          .masonry-grid { column-count: 3; }
-        }
-        @media (min-width: 1280px) {
-          .masonry-grid { column-count: 4; }
-        }
-      `}</style>
+      
+      {/* Gradient overlay at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
     </section>
   );
 }

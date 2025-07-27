@@ -37,28 +37,36 @@ const socialIcons = [
 
 export function SocialDock() {
   return (
-    <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[100] flex flex-row gap-3 bg-white/10 dark:bg-black/20 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-full px-6 py-3">
+    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-[100] flex flex-row gap-1 bg-white/5 dark:bg-black/10 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-full px-3 py-2">
       {socialIcons.map(({ icon: Icon, href, color, label }, index) => (
         <a
           key={label}
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-10 h-10 rounded-full bg-white/10 dark:bg-white/5 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-all duration-300 hover:scale-110 group"
-          style={{
-            "--accent-color": color,
-          } as React.CSSProperties}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = color;
-            e.currentTarget.style.color = "#ffffff";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "";
-            e.currentTarget.style.color = "";
-          }}
+          className="relative group"
         >
-          <Icon className="w-5 h-5" />
-          <span className="sr-only">{label}</span>
+          <div 
+            className="w-8 h-8 rounded-full bg-white/10 dark:bg-white/5 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-all duration-300 hover:scale-125 hover:-translate-y-2"
+            style={{
+              "--accent-color": color,
+            } as React.CSSProperties}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = color;
+              e.currentTarget.style.color = "#ffffff";
+              e.currentTarget.style.boxShadow = `0 4px 20px ${color}50`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "";
+              e.currentTarget.style.color = "";
+              e.currentTarget.style.boxShadow = "";
+            }}
+          >
+            <Icon className="w-4 h-4" />
+          </div>
+          <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-black/80 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+            {label}
+          </span>
         </a>
       ))}
     </div>

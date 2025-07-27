@@ -84,6 +84,13 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        playfair: ["Playfair Display", "serif"],
+        bebas: ["Bebas Neue", "sans-serif"],
+        space: ["Space Grotesk", "sans-serif"],
+        oswald: ["Oswald", "sans-serif"],
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],

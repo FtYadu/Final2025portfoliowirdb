@@ -16,10 +16,10 @@ export function HeroSection() {
       className="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 dark:from-gray-900 dark:via-gray-800 dark:to-black"
     >
       <div className="text-center z-10 relative px-4">
-        <h1 className="hero-title font-playfair text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-accent-purple to-accent-gold bg-clip-text text-transparent">
-          Yadu Krishna
+        <h1 className="hero-title font-bebas text-8xl md:text-[12rem] font-black mb-6 bg-gradient-to-r from-accent-purple to-accent-gold bg-clip-text text-transparent uppercase tracking-widest leading-none">
+          YADU KRISHNA
         </h1>
-        <p className="hero-subtitle text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+        <p className="hero-subtitle text-xl md:text-3xl text-gray-300 mb-8 max-w-2xl mx-auto font-space font-light italic">
           Creative Visual Storyteller & Graphic Designer
         </p>
         <div className="hero-tags flex flex-wrap justify-center gap-4 mb-12">
