@@ -200,7 +200,11 @@ export class MemStorage implements IStorage {
         filename: item.filename,
         imageurl: item.imageurl,
         caption: item.caption,
-        order: index
+        order: index,
+        type: "image",
+        videoId: null,
+        category: "photography",
+        tags: []
       };
       this.portfolioImages.set(id, portfolioImage);
     });
@@ -234,9 +238,26 @@ export class MemStorage implements IStorage {
       .sort((a, b) => (a.order || 0) - (b.order || 0));
   }
 
+  async getPortfolioCategories(): Promise<{category: string, count: number}[]> {
+    const categoryMap = new Map<string, number>();
+    Array.from(this.portfolioImages.values()).forEach(image => {
+      const count = categoryMap.get(image.category) || 0;
+      categoryMap.set(image.category, count + 1);
+    });
+    return Array.from(categoryMap.entries()).map(([category, count]) => ({ category, count }));
+  }
+
   async createPortfolioImage(insertImage: InsertPortfolioImage): Promise<PortfolioImage> {
     const id = randomUUID();
-    const image: PortfolioImage = { ...insertImage, id };
+    const image: PortfolioImage = { 
+      ...insertImage, 
+      id,
+      type: insertImage.type || "image",
+      videoId: insertImage.videoId || null,
+      category: insertImage.category || "photography",
+      tags: insertImage.tags || [],
+      order: insertImage.order || 0
+    };
     this.portfolioImages.set(id, image);
     return image;
   }
@@ -245,7 +266,8 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const submission: ContactSubmission = { 
       ...insertSubmission, 
-      id, 
+      id,
+      subject: insertSubmission.subject || null,
       submittedAt: new Date().toISOString() 
     };
     this.contactSubmissions.set(id, submission);
@@ -294,13 +316,13 @@ export class MemStorage implements IStorage {
   // Blog methods implementation
   async getAllBlogPosts(): Promise<BlogPost[]> {
     return Array.from(this.blogPosts.values())
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      .sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime());
   }
 
   async getPublishedBlogPosts(): Promise<BlogPost[]> {
     return Array.from(this.blogPosts.values())
       .filter(post => post.published === 1)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      .sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime());
   }
 
   async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
@@ -312,6 +334,10 @@ export class MemStorage implements IStorage {
     const post: BlogPost = {
       ...insertPost,
       id,
+      tags: insertPost.tags || [],
+      author: insertPost.author || "Yadu Krishna",
+      published: insertPost.published || 0,
+      readTime: insertPost.readTime || 5,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
