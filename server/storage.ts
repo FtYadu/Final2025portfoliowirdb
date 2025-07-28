@@ -44,24 +44,28 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPortfolioImages(limit: number = 20, offset: number = 0, category?: string): Promise<PortfolioImage[]> {
-    let query = db.select().from(portfolioImages);
-    
     if (category && category !== 'all') {
-      query = query.where(eq(portfolioImages.category, category));
+      const images = await db.select().from(portfolioImages)
+        .where(eq(portfolioImages.category, category))
+        .limit(limit)
+        .offset(offset);
+      return images;
     }
     
-    const images = await query.limit(limit).offset(offset);
+    const images = await db.select().from(portfolioImages)
+      .limit(limit)
+      .offset(offset);
     return images;
   }
 
   async getAllPortfolioImages(category?: string): Promise<PortfolioImage[]> {
-    let query = db.select().from(portfolioImages);
-    
     if (category && category !== 'all') {
-      query = query.where(eq(portfolioImages.category, category));
+      const images = await db.select().from(portfolioImages)
+        .where(eq(portfolioImages.category, category));
+      return images;
     }
     
-    const images = await query;
+    const images = await db.select().from(portfolioImages);
     return images;
   }
 
