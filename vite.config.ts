@@ -27,6 +27,44 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Core React
+          'react-vendor': ['react', 'react-dom'],
+          // Radix UI components
+          'radix-ui': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-slot',
+            '@radix-ui/react-toast',
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-alert-dialog',
+            '@radix-ui/react-avatar',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-popover',
+            '@radix-ui/react-tabs',
+            '@radix-ui/react-tooltip',
+            '@radix-ui/react-select',
+            '@radix-ui/react-label'
+          ],
+          // Form and validation
+          'forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          // Routing and navigation
+          'routing': ['wouter'],
+          // Animation libraries
+          'animation': ['framer-motion', 'gsap'],
+          // Utility libraries
+          'utils': ['clsx', 'tailwind-merge', 'class-variance-authority', 'date-fns'],
+          // Icons and UI
+          'icons': ['lucide-react', 'react-icons'],
+          // Data fetching
+          'query': ['@tanstack/react-query'],
+          // Charts and visualization
+          'charts': ['recharts'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
   },
   server: {
     fs: {
