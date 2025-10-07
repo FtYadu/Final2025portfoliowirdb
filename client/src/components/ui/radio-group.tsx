@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file defines the RadioGroup component, a standard UI element.
+ * This component is based on the shadcn/ui library for selecting a single option from a set.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
+/**
+ * @fileoverview This file defines the RadioGroup component, a standard UI element.
+ * This component is based on the shadcn/ui library for selecting a single option from a set.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
 import * as React from "react"
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
 import { Circle } from "lucide-react"

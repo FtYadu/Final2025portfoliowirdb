@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This is the main entry point for the server application.
+ * It sets up an Express server, configures middleware for request logging and
+ * JSON parsing, registers all API routes, sets up Vite for development, serves
+ * static files in production, and starts the server on the configured port.
+ */
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -9,6 +15,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+/**
+ * Middleware to log incoming API requests.
+ * It captures the request method, path, status code, and response time.
+ * For API requests that return JSON, it also captures and logs the response body.
+ * Log lines are truncated to a maximum of 80 characters.
+ * @param {Request} req - The Express request object.
+ * @param {Response} res - The Express response object.
+ * @param {NextFunction} next - The next middleware function in the stack.
+ */
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -39,9 +54,23 @@ app.use((req, res, next) => {
   next();
 });
 
+/**
+ * Main function to initialize and start the server.
+ * It registers the API routes, sets up error handling,
+ * configures Vite for development or serves static files for production,
+ * and starts the HTTP server.
+ */
 (async () => {
   const server = await registerRoutes(app);
 
+  /**
+   * Error handling middleware.
+   * Catches and handles errors that occur in the application.
+   * @param {any} err - The error object.
+   * @param {Request} _req - The Express request object.
+   * @param {Response} res - The Express response object.
+   * @param {NextFunction} _next - The next middleware function.
+   */
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";

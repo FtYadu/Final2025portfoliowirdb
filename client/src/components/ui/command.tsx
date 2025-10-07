@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file defines the Command component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides a command menu.
+ * It is styled using Tailwind CSS and built with cmdk for functionality.
+ */
+/**
+ * @fileoverview This file defines the Command component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides a command menu.
+ * It is styled using Tailwind CSS and built with cmdk for functionality.
+ */
 import * as React from "react"
 import { type DialogProps } from "@radix-ui/react-dialog"
 import { Command as CommandPrimitive } from "cmdk"

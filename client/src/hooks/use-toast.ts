@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the `useToast` hook and `toast` function,
+ * which are part of a toast notification system. This implementation is based
+ * on the shadcn/ui library's toast component and provides a way to programmatically
+ * trigger and manage toast notifications within the application.
+ */
 import * as React from "react"
 
 import type {

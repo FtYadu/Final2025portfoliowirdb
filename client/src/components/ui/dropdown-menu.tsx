@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file defines the DropdownMenu component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides a dropdown menu.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
+/**
+ * @fileoverview This file defines the DropdownMenu component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides a dropdown menu.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"

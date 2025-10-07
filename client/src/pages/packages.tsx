@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file defines the Packages page component, which displays
+ * a rate card of services offered, organized by category.
+ */
 import { FC, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
@@ -23,6 +27,14 @@ interface Addon {
   price: string;
 }
 
+/**
+ * The Packages page component.
+ * It displays a detailed rate card for various creative services, including
+ * photography, videography, and AI content. The packages are presented in
+ * expandable accordion-style sections. It also lists available add-ons.
+ *
+ * @returns {JSX.Element} The rendered packages page.
+ */
 export default function Packages() {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);

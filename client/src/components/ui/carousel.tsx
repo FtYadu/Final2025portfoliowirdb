@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file defines the Carousel component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides a slideshow for cycling through elements.
+ * It is styled using Tailwind CSS and built with Embla React for functionality.
+ */
+/**
+ * @fileoverview This file defines the Carousel component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides a slideshow for cycling through elements.
+ * It is styled using Tailwind CSS and built with Embla React for functionality.
+ */
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,

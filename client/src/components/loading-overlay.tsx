@@ -1,11 +1,31 @@
+/**
+ * @fileoverview This file defines the LoadingOverlay component, a full-screen
+ * indicator displayed while the main application content is loading.
+ */
 import { useEffect } from "react";
 import { animations } from "@/lib/gsap-utils";
 
+/**
+ * @interface LoadingOverlayProps
+ * @description Defines the properties for the LoadingOverlay component.
+ * @property {() => void} onComplete - A callback function to be executed when the loading animation finishes.
+ */
 interface LoadingOverlayProps {
   onComplete: () => void;
 }
 
+/**
+ * A full-screen loading overlay component that shows an animation while the
+ * application is initializing. It uses GSAP for a sequenced animation and
+ * executes a callback function upon completion to transition to the main content.
+ *
+ * @param {LoadingOverlayProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered loading overlay.
+ */
 export function LoadingOverlay({ onComplete }: LoadingOverlayProps) {
+  /**
+   * Effect to trigger the loading animation sequence after a short delay.
+   */
   useEffect(() => {
     const timer = setTimeout(() => {
       animations.loadingSequence(onComplete);

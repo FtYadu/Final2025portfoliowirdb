@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the Accordion component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides a vertically
+ * stacking set of interactive headings that each reveal a section of content.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
 import * as React from "react"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react"

@@ -1,9 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+/**
+ * @fileoverview This file defines the HeroSection component, which serves as the
+ * main landing view of the portfolio website.
+ */
+import { useEffect, useRef } from "react";
 import { ChevronDown, MessageCircle, Calendar, Download } from "lucide-react";
 import { animations } from "@/lib/gsap-utils";
 import { socialLinks } from "@/lib/portfolio-data";
-import { Button } from "@/components/ui/button";
 
+/**
+ * The HeroSection component is the main "above-the-fold" content on the homepage.
+ * It displays a large headline, a subtitle, skill tags, and call-to-action buttons.
+ * It also features an entrance animation powered by GSAP and a function to download a CV.
+ *
+ * @returns {JSX.Element} The rendered hero section component.
+ */
 export function HeroSection() {
   const heroRef = useRef<HTMLElement>(null);
 
@@ -11,6 +21,12 @@ export function HeroSection() {
     animations.heroAnimation();
   }, []);
 
+  /**
+   * Handles the CV download process.
+   * It fetches the CV download information from the API and triggers a file download
+   * in the browser.
+   * @async
+   */
   const handleCVDownload = async () => {
     try {
       const response = await fetch('/api/cv/download');

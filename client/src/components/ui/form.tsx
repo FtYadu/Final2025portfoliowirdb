@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file defines the Form component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides tools for building forms.
+ * It is styled using Tailwind CSS and built with React Hook Form for functionality.
+ */
+/**
+ * @fileoverview This file defines the Form component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides tools for building forms.
+ * It is styled using Tailwind CSS and built with React Hook Form for functionality.
+ */
 "use client"
 
 import * as React from "react"

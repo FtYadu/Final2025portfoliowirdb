@@ -1,4 +1,8 @@
-import { useState, useEffect } from "react";
+/**
+ * @fileoverview This file defines the Blog page component, which displays a
+ * collection of blog posts with filtering capabilities.
+ */
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { NavMenu } from "@/components/nav-menu";
 import { SpiralSocialDock } from "@/components/spiral-social-dock";
@@ -14,6 +18,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/**
+ * The Blog page component.
+ * It fetches blog posts from an API and displays them in a grid.
+ * Users can filter the posts by category and tags.
+ *
+ * @returns {JSX.Element} The rendered blog page.
+ */
 export default function Blog() {
   const [isScrolling, setIsScrolling] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");

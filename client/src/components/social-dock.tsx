@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file defines the SocialDock component, a floating dock
+ * providing quick links to various social media profiles and contact methods.
+ */
 import { 
   MessageCircle,
   Calendar,
@@ -18,6 +22,10 @@ import {
 } from "react-icons/si";
 import { socialLinks } from "@/lib/portfolio-data";
 
+/**
+ * @description An array of objects defining the social media icons, links, colors,
+ * and labels to be displayed in the SocialDock.
+ */
 const socialIcons = [
   { icon: SiInstagram, href: socialLinks.instagram, color: "#E4405F", label: "Instagram" },
   { icon: SiX, href: socialLinks.twitter, color: "#000000", label: "X (Twitter)" },
@@ -35,16 +43,24 @@ const socialIcons = [
   { icon: Si500Px, href: socialLinks.px500, color: "#0099E5", label: "500px" },
 ];
 
+/**
+ * A floating dock component fixed to the bottom of the viewport. It displays a series
+ * of social media icons. On hover, each icon scales up, changes to its brand color,
+ * and displays a tooltip with its name.
+ *
+ * @returns {JSX.Element} The rendered social dock component.
+ */
 export function SocialDock() {
   return (
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-[100] flex flex-row gap-1 bg-white/5 dark:bg-black/10 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-full px-3 py-2">
-      {socialIcons.map(({ icon: Icon, href, color, label }, index) => (
+      {socialIcons.map(({ icon: Icon, href, color, label }) => (
         <a
           key={label}
           href={href}
           target="_blank"
           rel="noopener noreferrer"
           className="relative group"
+          aria-label={label}
         >
           <div 
             className="w-8 h-8 rounded-full bg-white/10 dark:bg-white/5 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-all duration-300 hover:scale-125 hover:-translate-y-2"

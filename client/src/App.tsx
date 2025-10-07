@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file defines the main application component and its router.
+ * It sets up the routing for the entire application and wraps it with necessary context providers.
+ */
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -9,6 +13,11 @@ import Blog from "@/pages/blog";
 import Packages from "@/pages/packages";
 import NotFound from "@/pages/not-found";
 
+/**
+ * Defines the application's routing structure using `wouter`.
+ * It maps URL paths to their corresponding page components.
+ * @returns {JSX.Element} The router component with all defined routes.
+ */
 function Router() {
   return (
     <Switch>
@@ -20,6 +29,11 @@ function Router() {
   );
 }
 
+/**
+ * The main App component that serves as the root of the application.
+ * It sets up all the necessary providers for React Query, theming, tooltips, and toasts.
+ * @returns {JSX.Element} The fully-wrapped application component.
+ */
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
