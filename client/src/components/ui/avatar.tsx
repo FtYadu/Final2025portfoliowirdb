@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file defines the Avatar component, a standard UI element.
+ * This component is based on the shadcn/ui library and is used to display a user's avatar.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
+/**
+ * @fileoverview This file defines the Avatar component, a standard UI element.
+ * This component is based on the shadcn/ui library and is used to display a user's avatar.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
 "use client"
 
 import * as React from "react"

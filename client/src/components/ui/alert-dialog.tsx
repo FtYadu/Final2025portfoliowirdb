@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the AlertDialog component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides a modal dialog
+ * that interrupts the user with important content and expects a response.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
 import * as React from "react"
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 

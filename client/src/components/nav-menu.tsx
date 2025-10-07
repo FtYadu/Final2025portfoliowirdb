@@ -1,17 +1,37 @@
+/**
+ * @fileoverview This file defines the NavMenu component, a floating, toggleable
+ * menu that provides site navigation and controls for theme and auto-scrolling.
+ */
 import { useState } from "react";
 import { Menu, X, Sun, Moon, Play, Pause, BookOpen, Package } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { Link } from "wouter";
 
+/**
+ * @interface NavMenuProps
+ * @description Defines the properties for the NavMenu component.
+ * @property {boolean} isScrolling - Indicates whether the auto-scroll feature is currently active.
+ * @property {() => void} onToggleScroll - A callback function to toggle the auto-scroll feature.
+ */
 interface NavMenuProps {
   isScrolling: boolean;
   onToggleScroll: () => void;
 }
 
+/**
+ * A floating navigation menu component that provides access to different pages
+ * of the website, as well as controls for toggling the theme and auto-scroll functionality.
+ *
+ * @param {NavMenuProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered navigation menu component.
+ */
 export function NavMenu({ isScrolling, onToggleScroll }: NavMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
+  /**
+   * Toggles the visibility of the navigation menu.
+   */
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
@@ -19,6 +39,8 @@ export function NavMenu({ isScrolling, onToggleScroll }: NavMenuProps) {
       <button
         onClick={toggleMenu}
         className="fixed top-6 right-6 z-50 p-3 backdrop-blur-xl bg-black/10 dark:bg-white/10 rounded-lg hover:bg-black/20 dark:hover:bg-white/20 transition-all duration-300"
+        aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+        aria-expanded={isOpen}
       >
         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>

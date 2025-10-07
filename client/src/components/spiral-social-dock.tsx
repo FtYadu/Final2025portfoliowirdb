@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file defines the SpiralSocialDock component, an animated
+ * and interactive dock for social media links.
+ */
 import { useState, useRef, useEffect } from "react";
 import { 
   MessageCircle,
@@ -21,6 +25,10 @@ import {
 import { socialLinks } from "@/lib/portfolio-data";
 import gsap from "gsap";
 
+/**
+ * @description An array of objects defining the social media icons, links, colors,
+ * and labels to be displayed in the spiral dock.
+ */
 const socialIcons = [
   { icon: SiInstagram, href: socialLinks.instagram, color: "#E4405F", label: "Instagram" },
   { icon: SiX, href: socialLinks.twitter, color: "#000000", label: "X (Twitter)" },
@@ -38,20 +46,28 @@ const socialIcons = [
   { icon: Si500Px, href: socialLinks.px500, color: "#0099E5", label: "500px" },
 ];
 
+/**
+ * An interactive social media dock that reveals icons in a spiral animation upon clicking
+ * a central button. It uses the GSAP library to create a fluid and engaging user experience.
+ *
+ * @returns {JSX.Element} The rendered spiral social dock component.
+ */
 export function SpiralSocialDock() {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const iconsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
+  /**
+   * Effect to set up the GSAP timeline for the spiral animation.
+   * This runs once when the component mounts.
+   */
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Create GSAP timeline
     const tl = gsap.timeline({ paused: true });
     tlRef.current = tl;
 
-    // Calculate spiral positions
     const radius = 120;
     const angleStep = (2 * Math.PI) / socialIcons.length;
     const spiralTurns = 2;
@@ -60,10 +76,8 @@ export function SpiralSocialDock() {
       if (!icon) return;
       
       const angle = angleStep * index;
-      const spiralRadius = (radius / socialIcons.length) * (index + 1);
       const finalRadius = radius;
       
-      // Spiral out animation
       tl.to(icon, {
         rotation: 360 * spiralTurns,
         x: Math.cos(angle) * finalRadius,
@@ -80,6 +94,10 @@ export function SpiralSocialDock() {
     };
   }, []);
 
+  /**
+   * Toggles the open/closed state of the spiral dock by playing or reversing
+   * the GSAP animation timeline.
+   */
   const toggleOpen = () => {
     if (!tlRef.current) return;
 
@@ -96,20 +114,20 @@ export function SpiralSocialDock() {
       ref={containerRef}
       className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[100]"
     >
-      {/* Central trigger button */}
       <button
         onClick={toggleOpen}
         className="relative z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-gray-700 dark:text-gray-300 shadow-sm transition-all duration-300 hover:scale-110 hover:bg-white/20"
         style={{
           boxShadow: isOpen ? '0 0 20px rgba(255, 255, 255, 0.3)' : '0 2px 10px rgba(0,0,0,0.1)'
         }}
+        aria-label={isOpen ? "Close social links" : "Open social links"}
+        aria-expanded={isOpen}
       >
         <Share2 
           className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
 
-      {/* Social icons */}
       {socialIcons.map(({ icon: Icon, href, color, label }, index) => (
         <div
           key={label}
@@ -132,6 +150,8 @@ export function SpiralSocialDock() {
                 e.preventDefault();
               }
             }}
+            aria-label={label}
+            tabIndex={isOpen ? 0 : -1}
           >
             <div 
               className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-gray-700 dark:text-gray-300 transition-all duration-300 hover:scale-125"

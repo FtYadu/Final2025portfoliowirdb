@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Defines the PortfolioGallery component, a dynamic and interactive
+ * gallery for showcasing portfolio items including images and videos.
+ */
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Images, Play, Grid, Filter } from "lucide-react";
@@ -6,6 +10,10 @@ import { shuffleArray } from "@/lib/portfolio-data";
 import { Lightbox } from "./lightbox";
 import type { PortfolioImage } from "@shared/schema";
 
+/**
+ * @description A list of predefined categories for filtering the portfolio.
+ * Each category has an ID, a display label, and an associated color gradient.
+ */
 const categories = [
   { id: 'all', label: 'All Work', color: 'from-purple-500 to-blue-500' },
   { id: 'portrait', label: 'Portraits', color: 'from-orange-500 to-pink-500' },
@@ -17,6 +25,17 @@ const categories = [
   { id: 'photography', label: 'General', color: 'from-gray-500 to-slate-500' }
 ];
 
+/**
+ * The PortfolioGallery component renders a feature-rich, masonry-style gallery.
+ * Key features include:
+ * - Fetches and combines images and videos from multiple API endpoints.
+ * - Allows filtering by category with smooth GSAP animations.
+ * - Implements a "Load More" functionality for pagination.
+ * - Integrates a full-screen Lightbox for detailed viewing.
+ * - Uses lazy loading for images to improve performance.
+ *
+ * @returns {JSX.Element} The rendered portfolio gallery section.
+ */
 export function PortfolioGallery() {
   const [displayedMedia, setDisplayedMedia] = useState<PortfolioImage[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -37,11 +56,9 @@ export function PortfolioGallery() {
     queryKey: ['/api/vimeo/videos'],
   });
 
-  // Combine images and videos using useMemo to prevent infinite loops
   const allMedia = useMemo(() => [...allImages, ...vimeoVideos], [allImages, vimeoVideos]);
   const isLoading = imagesLoading || videosLoading;
 
-  // Filter media by selected category
   const filteredMedia = useMemo(() => {
     if (selectedCategory === 'all') return allMedia;
     return allMedia.filter(item => item.category === selectedCategory);
@@ -55,34 +72,35 @@ export function PortfolioGallery() {
     }
   }, [filteredMedia, hasInitialized]);
 
-  // Handle category changes with GSAP transitions
+  /**
+   * Handles changing the active category filter.
+   * It triggers animations for the filter buttons and gallery items,
+   * then updates the displayed media.
+   * @param {string} categoryId - The ID of the category to switch to.
+   * @async
+   */
   const handleCategoryChange = async (categoryId: string) => {
     if (categoryId === selectedCategory || isFilterTransitioning) return;
     
     setIsFilterTransitioning(true);
     
-    // Animate button press
     const activeButton = categoryFilterRef.current?.querySelector(`[data-category="${categoryId}"]`);
     if (activeButton) {
       animations.categoryFilterAnimation(activeButton);
     }
     
-    // Animate out current items
     if (galleryRef.current) {
       const items = galleryRef.current.querySelectorAll('.gallery-item');
       await animations.fadeOut(Array.from(items));
     }
     
-    // Update category and reset page
     setSelectedCategory(categoryId);
     setCurrentPage(0);
     
-    // Get new filtered data
     const newFiltered = categoryId === 'all' ? allMedia : allMedia.filter(item => item.category === categoryId);
     const shuffled = shuffleArray(newFiltered);
     setDisplayedMedia(shuffled.slice(0, mediaPerPage));
     
-    // Animate in new items with delay
     setTimeout(() => {
       if (galleryRef.current) {
         const items = galleryRef.current.querySelectorAll('.gallery-item');
@@ -93,10 +111,12 @@ export function PortfolioGallery() {
   };
 
   useEffect(() => {
-    // Initialize scroll animations when component mounts
     animations.initScrollAnimations();
   }, []);
 
+  /**
+   * Loads the next page of media items into the gallery.
+   */
   const loadMoreMedia = () => {
     const shuffled = shuffleArray(filteredMedia);
     const nextPage = currentPage + 1;
@@ -108,15 +128,26 @@ export function PortfolioGallery() {
     setCurrentPage(nextPage);
   };
 
+  /**
+   * Opens the lightbox to display the selected media item.
+   * @param {number} index - The index of the media item to display.
+   */
   const openLightbox = (index: number) => {
     setCurrentMediaIndex(index);
     setLightboxOpen(true);
   };
 
+  /**
+   * Closes the lightbox.
+   */
   const closeLightbox = () => {
     setLightboxOpen(false);
   };
 
+  /**
+   * Navigates to the next or previous item in the lightbox.
+   * @param {'prev' | 'next'} direction - The direction to navigate.
+   */
   const navigateLightbox = (direction: 'prev' | 'next') => {
     if (direction === 'prev') {
       setCurrentMediaIndex(prev => prev > 0 ? prev - 1 : displayedMedia.length - 1);

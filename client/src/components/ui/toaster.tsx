@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file defines the Toaster component, a standard UI element.
+ * This component is based on the shadcn/ui library and manages the rendering of toasts.
+ * It is styled using Tailwind CSS for visual presentation.
+ */
+/**
+ * @fileoverview This file defines the Toaster component, a standard UI element.
+ * This component is based on the shadcn/ui library and manages the rendering of toasts.
+ * It is styled using Tailwind CSS for visual presentation.
+ */
 import { useToast } from "@/hooks/use-toast"
 import {
   Toast,

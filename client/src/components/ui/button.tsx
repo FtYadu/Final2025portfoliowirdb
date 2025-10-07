@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the Button component, a standard UI element.
+ * This component is based on the shadcn/ui library and provides the visual
+ * and functional interface for a button. It is styled using Tailwind CSS
+ * and built with Radix UI for accessibility and functionality.
+ */
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"

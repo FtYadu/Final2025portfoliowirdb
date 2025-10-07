@@ -1,10 +1,23 @@
+/**
+ * @fileoverview This file centralizes all GSAP (GreenSock Animation Platform)
+ * animations used throughout the application. It provides a collection of reusable
+ * animation functions for various UI elements and interactions.
+ */
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * @description A collection of reusable GSAP animation functions.
+ */
 export const animations = {
-  // Entrance animations
+  /**
+   * Animates an element by fading it in and moving it up.
+   * @param {string | Element} element - The target element or selector.
+   * @param {number} [delay=0] - The delay before the animation starts.
+   * @returns {gsap.core.Tween} The GSAP tween instance.
+   */
   fadeInUp: (element: string | Element, delay: number = 0) => {
     return gsap.fromTo(
       element,
@@ -19,6 +32,12 @@ export const animations = {
     );
   },
 
+  /**
+   * Animates an element by fading it in and scaling it up.
+   * @param {string | Element} element - The target element or selector.
+   * @param {number} [delay=0] - The delay before the animation starts.
+   * @returns {gsap.core.Tween} The GSAP tween instance.
+   */
   fadeInScale: (element: string | Element, delay: number = 0) => {
     return gsap.fromTo(
       element,
@@ -33,6 +52,12 @@ export const animations = {
     );
   },
 
+  /**
+   * Animates a list of elements by fading them in with a stagger effect.
+   * @param {string | Element[]} elements - The target elements or selector.
+   * @param {number} [stagger=0.1] - The stagger delay between each element's animation.
+   * @returns {gsap.core.Tween} The GSAP tween instance.
+   */
   staggerFadeIn: (elements: string | Element[], stagger: number = 0.1) => {
     return gsap.fromTo(
       elements,
@@ -47,7 +72,10 @@ export const animations = {
     );
   },
 
-  // Hover animations
+  /**
+   * Adds a hover effect to an element that scales it up and down.
+   * @param {string | Element} element - The target element or selector.
+   */
   hoverScale: (element: string | Element) => {
     const el = typeof element === "string" ? document.querySelector(element) : element;
     if (!el) return;
@@ -61,7 +89,11 @@ export const animations = {
     });
   },
 
-  // Loading animations
+  /**
+   * Defines the animation sequence for the loading overlay.
+   * @param {() => void} [onComplete] - A callback function to execute when the animation completes.
+   * @returns {gsap.core.Timeline} The GSAP timeline instance.
+   */
   loadingSequence: (onComplete?: () => void) => {
     const tl = gsap.timeline({ onComplete });
     
@@ -78,7 +110,10 @@ export const animations = {
     return tl;
   },
 
-  // Hero section animation
+  /**
+   * Defines the entrance animation for the hero section elements.
+   * @returns {gsap.core.Timeline} The GSAP timeline instance.
+   */
   heroAnimation: () => {
     const tl = gsap.timeline({ delay: 0.5 });
     
@@ -110,7 +145,12 @@ export const animations = {
     return tl;
   },
 
-  // Gallery animations
+  /**
+   * Defines the entrance animation for a single gallery item.
+   * @param {Element} element - The gallery item element.
+   * @param {number} index - The index of the item, used for staggering the delay.
+   * @returns {gsap.core.Tween} The GSAP tween instance.
+   */
   galleryItemEntrance: (element: Element, index: number) => {
     return gsap.fromTo(
       element,
@@ -130,7 +170,12 @@ export const animations = {
     );
   },
 
-  // Lightbox animations
+  /**
+   * Defines the animation for opening the lightbox.
+   * @param {Element} lightbox - The lightbox container element.
+   * @param {Element} image - The image or media element inside the lightbox.
+   * @returns {gsap.core.Timeline} The GSAP timeline instance.
+   */
   lightboxOpen: (lightbox: Element, image: Element) => {
     const tl = gsap.timeline();
     
@@ -149,6 +194,13 @@ export const animations = {
     return tl;
   },
 
+  /**
+   * Defines the animation for closing the lightbox.
+   * @param {Element} lightbox - The lightbox container element.
+   * @param {Element} image - The image or media element inside the lightbox.
+   * @param {() => void} [onComplete] - A callback function to execute when the animation completes.
+   * @returns {gsap.core.Timeline} The GSAP timeline instance.
+   */
   lightboxClose: (lightbox: Element, image: Element, onComplete?: () => void) => {
     const tl = gsap.timeline({ onComplete });
     
@@ -168,7 +220,11 @@ export const animations = {
     return tl;
   },
 
-  // Theme toggle animation
+  /**
+   * Animates the theme toggle button on click.
+   * @param {Element} element - The theme toggle button element.
+   * @returns {gsap.core.Tween} The GSAP tween instance.
+   */
   themeToggle: (element: Element) => {
     return gsap.to(element, {
       rotation: 360,
@@ -177,7 +233,11 @@ export const animations = {
     });
   },
 
-  // Category filtering animations
+  /**
+   * Animates a list of elements by fading them out.
+   * @param {Element[]} elements - The array of elements to animate.
+   * @returns {Promise<void>} A promise that resolves when the animation is complete.
+   */
   fadeOut: (elements: Element[]) => {
     return new Promise<void>((resolve) => {
       gsap.to(elements, {
@@ -192,6 +252,11 @@ export const animations = {
     });
   },
 
+  /**
+   * Animates a list of elements by fading them in.
+   * @param {Element[]} elements - The array of elements to animate.
+   * @returns {gsap.core.Tween} The GSAP tween instance.
+   */
   fadeIn: (elements: Element[]) => {
     return gsap.fromTo(
       elements,
@@ -211,7 +276,11 @@ export const animations = {
     );
   },
 
-  // Enhanced category filter animations
+  /**
+   * Animates the active category filter button.
+   * @param {Element} activeButton - The button element to animate.
+   * @returns {gsap.core.Tween} The GSAP tween instance.
+   */
   categoryFilterAnimation: (activeButton: Element) => {
     return gsap.to(activeButton, {
       scale: 1.1,
@@ -222,7 +291,10 @@ export const animations = {
     });
   },
 
-  // Scroll-triggered animations
+  /**
+   * Initializes all scroll-triggered animations for the site.
+   * This uses GSAP's ScrollTrigger batch functionality for performance.
+   */
   initScrollAnimations: () => {
     // Gallery items batch animation
     ScrollTrigger.batch(".gallery-item", {

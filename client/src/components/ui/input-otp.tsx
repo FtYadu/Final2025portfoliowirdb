@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file defines the InputOTP component, a standard UI element.
+ * This component is based on the shadcn/ui library for one-time password inputs.
+ * It is styled using Tailwind CSS for visual presentation.
+ */
+/**
+ * @fileoverview This file defines the InputOTP component, a standard UI element.
+ * This component is based on the shadcn/ui library for one-time password inputs.
+ * It is styled using Tailwind CSS for visual presentation.
+ */
 import * as React from "react"
 import { OTPInput, OTPInputContext } from "input-otp"
 import { Dot } from "lucide-react"

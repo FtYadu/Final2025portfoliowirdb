@@ -1,3 +1,13 @@
+/**
+ * @fileoverview This file defines the Separator component, a standard UI element.
+ * This component is based on the shadcn/ui library for visually separating content.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
+/**
+ * @fileoverview This file defines the Separator component, a standard UI element.
+ * This component is based on the shadcn/ui library for visually separating content.
+ * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
+ */
 import * as React from "react"
 import * as SeparatorPrimitive from "@radix-ui/react-separator"
 

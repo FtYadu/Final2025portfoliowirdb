@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file defines the ContactSection component, which displays
+ * a contact form, contact information, and social media links.
+ */
 import { useState } from "react";
 import { MessageCircle, Calendar, Camera, Hash, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +13,14 @@ import { socialLinks, formspreeEndpoint } from "@/lib/portfolio-data";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
+/**
+ * @interface ContactFormData
+ * @description Defines the structure for the contact form data.
+ * @property {string} name - The name of the person submitting the form.
+ * @property {string} email - The email address of the person.
+ * @property {string} subject - The subject of the message.
+ * @property {string} message - The content of the message.
+ */
 interface ContactFormData {
   name: string;
   email: string;
@@ -16,6 +28,16 @@ interface ContactFormData {
   message: string;
 }
 
+/**
+ * The ContactSection component renders a complete contact section for the website.
+ * It includes:
+ * - A contact form that submits data to a local API endpoint and Formspree.
+ * - Quick contact options like WhatsApp and a meeting scheduler.
+ * - Links to various social media profiles.
+ * It uses React Query for mutation handling and displays toast notifications for success or error states.
+ *
+ * @returns {JSX.Element} The rendered contact section.
+ */
 export function ContactSection() {
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
@@ -25,6 +47,10 @@ export function ContactSection() {
   });
   const { toast } = useToast();
 
+  /**
+   * @description A React Query mutation for handling the contact form submission.
+   * It sends the form data to both the local API and a Formspree endpoint.
+   */
   const contactMutation = useMutation({
     mutationFn: async (data: ContactFormData) => {
       // Submit to both our API and Formspree
@@ -57,11 +83,21 @@ export function ContactSection() {
     },
   });
 
+  /**
+   * Handles the form submission event.
+   * Prevents the default form action and triggers the contact mutation.
+   * @param {React.FormEvent} e - The form submission event.
+   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     contactMutation.mutate(formData);
   };
 
+  /**
+   * Handles changes in the input and textarea fields.
+   * Updates the component's state with the new form data.
+   * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} e - The change event.
+   */
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {

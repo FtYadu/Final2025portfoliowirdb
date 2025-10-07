@@ -1,3 +1,17 @@
+/**
+ * @fileoverview This file contains static data and utility functions related to the
+ * portfolio, such as social media links, API endpoints, and helper functions.
+ */
+
+/**
+ * @interface PortfolioItem
+ * @description Defines the structure for a portfolio item.
+ * @property {string} id - The unique identifier for the item.
+ * @property {string} filename - The name of the file.
+ * @property {string} imageurl - The URL of the image.
+ * @property {string} caption - A descriptive caption for the item.
+ * @property {number} [order] - The display order of the item.
+ */
 export interface PortfolioItem {
   id: string;
   filename: string;
@@ -6,6 +20,9 @@ export interface PortfolioItem {
   order?: number;
 }
 
+/**
+ * @description An object containing URLs for various social media profiles and contact methods.
+ */
 export const socialLinks = {
   instagram: "https://www.instagram.com/ft.yadu",
   twitter: "https://x.com/featyadu", 
@@ -23,8 +40,17 @@ export const socialLinks = {
   px500: "https://500px.com/p/ftyaduwork"
 };
 
+/**
+ * @description The endpoint URL for Formspree contact form submissions.
+ */
 export const formspreeEndpoint = "https://formspree.io/f/myzjjpny";
 
+/**
+ * Shuffles the elements of an array in place using the Fisher-Yates algorithm.
+ * @template T
+ * @param {T[]} array - The array to be shuffled.
+ * @returns {T[]} A new array with the elements of the original array in a random order.
+ */
 export const shuffleArray = <T>(array: T[]): T[] => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -34,6 +60,11 @@ export const shuffleArray = <T>(array: T[]): T[] => {
   return shuffled;
 };
 
+/**
+ * Returns a random height from a predefined set of values. This can be used
+ * for creating a varied masonry layout.
+ * @returns {number} A random height value.
+ */
 export const getRandomHeight = () => {
   const heights = [200, 250, 300, 350, 400, 450];
   return heights[Math.floor(Math.random() * heights.length)];
