@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library for navigating between pages.
  * It is styled using Tailwind CSS for visual presentation.
  */
-/**
- * @fileoverview This file defines the Pagination component, a standard UI element.
- * This component is based on the shadcn/ui library for navigating between pages.
- * It is styled using Tailwind CSS for visual presentation.
- */
 import * as React from "react"
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
 

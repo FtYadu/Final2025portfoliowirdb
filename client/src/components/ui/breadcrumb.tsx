@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library and provides navigation context.
  * It is styled using Tailwind CSS for visual presentation.
  */
-/**
- * @fileoverview This file defines the Breadcrumb component, a standard UI element.
- * This component is based on the shadcn/ui library and provides navigation context.
- * It is styled using Tailwind CSS for visual presentation.
- */
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { ChevronRight, MoreHorizontal } from "lucide-react"

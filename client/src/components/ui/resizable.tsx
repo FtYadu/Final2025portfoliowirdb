@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library for creating resizable panel groups.
  * It is styled using Tailwind CSS and built with react-resizable-panels for functionality.
  */
-/**
- * @fileoverview This file defines the Resizable component, a standard UI element.
- * This component is based on the shadcn/ui library for creating resizable panel groups.
- * It is styled using Tailwind CSS and built with react-resizable-panels for functionality.
- */
 "use client"
 
 import { GripVertical } from "lucide-react"

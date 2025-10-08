@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library and is used to display a small piece of information.
  * It is styled using Tailwind CSS for visual presentation.
  */
-/**
- * @fileoverview This file defines the Badge component, a standard UI element.
- * This component is based on the shadcn/ui library and is used to display a small piece of information.
- * It is styled using Tailwind CSS for visual presentation.
- */
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 

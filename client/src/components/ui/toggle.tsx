@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library for a two-state button.
  * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
  */
-/**
- * @fileoverview This file defines the Toggle component, a standard UI element.
- * This component is based on the shadcn/ui library for a two-state button.
- * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
- */
 import * as React from "react"
 import * as TogglePrimitive from "@radix-ui/react-toggle"
 import { cva, type VariantProps } from "class-variance-authority"

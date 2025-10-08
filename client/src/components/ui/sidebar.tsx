@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library and provides a sidebar navigation.
  * It is styled using Tailwind CSS for visual presentation.
  */
-/**
- * @fileoverview This file defines the Sidebar component, a standard UI element.
- * This component is based on the shadcn/ui library and provides a sidebar navigation.
- * It is styled using Tailwind CSS for visual presentation.
- */
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"

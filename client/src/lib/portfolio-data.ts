@@ -46,21 +46,6 @@ export const socialLinks = {
 export const formspreeEndpoint = "https://formspree.io/f/myzjjpny";
 
 /**
- * Shuffles the elements of an array in place using the Fisher-Yates algorithm.
- * @template T
- * @param {T[]} array - The array to be shuffled.
- * @returns {T[]} A new array with the elements of the original array in a random order.
- */
-export const shuffleArray = <T>(array: T[]): T[] => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
-
-/**
  * Returns a random height from a predefined set of values. This can be used
  * for creating a varied masonry layout.
  * @returns {number} A random height value.

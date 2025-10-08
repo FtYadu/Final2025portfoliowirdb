@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library for site navigation.
  * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
  */
-/**
- * @fileoverview This file defines the NavigationMenu component, a standard UI element.
- * This component is based on the shadcn/ui library for site navigation.
- * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
- */
 import * as React from "react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { cva } from "class-variance-authority"
