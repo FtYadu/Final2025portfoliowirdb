@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library for switching between content sections.
  * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
  */
-/**
- * @fileoverview This file defines the Tabs component, a standard UI element.
- * This component is based on the shadcn/ui library for switching between content sections.
- * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
- */
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 

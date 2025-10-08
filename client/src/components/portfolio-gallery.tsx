@@ -6,7 +6,6 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Images, Play, Grid, Filter } from "lucide-react";
 import { animations } from "@/lib/gsap-utils";
-import { shuffleArray } from "@/lib/portfolio-data";
 import { Lightbox } from "./lightbox";
 import type { PortfolioImage } from "@shared/schema";
 
@@ -56,7 +55,9 @@ export function PortfolioGallery() {
     queryKey: ['/api/vimeo/videos'],
   });
 
-  const allMedia = useMemo(() => [...allImages, ...vimeoVideos], [allImages, vimeoVideos]);
+  const allMedia = useMemo(() => {
+    return [...allImages, ...vimeoVideos].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }, [allImages, vimeoVideos]);
   const isLoading = imagesLoading || videosLoading;
 
   const filteredMedia = useMemo(() => {
@@ -66,8 +67,7 @@ export function PortfolioGallery() {
 
   useEffect(() => {
     if (filteredMedia.length > 0 && !hasInitialized) {
-      const shuffled = shuffleArray(filteredMedia);
-      setDisplayedMedia(shuffled.slice(0, mediaPerPage));
+      setDisplayedMedia(filteredMedia.slice(0, mediaPerPage));
       setHasInitialized(true);
     }
   }, [filteredMedia, hasInitialized]);
@@ -98,8 +98,7 @@ export function PortfolioGallery() {
     setCurrentPage(0);
     
     const newFiltered = categoryId === 'all' ? allMedia : allMedia.filter(item => item.category === categoryId);
-    const shuffled = shuffleArray(newFiltered);
-    setDisplayedMedia(shuffled.slice(0, mediaPerPage));
+    setDisplayedMedia(newFiltered.slice(0, mediaPerPage));
     
     setTimeout(() => {
       if (galleryRef.current) {
@@ -118,11 +117,10 @@ export function PortfolioGallery() {
    * Loads the next page of media items into the gallery.
    */
   const loadMoreMedia = () => {
-    const shuffled = shuffleArray(filteredMedia);
     const nextPage = currentPage + 1;
     const startIndex = nextPage * mediaPerPage;
     const endIndex = startIndex + mediaPerPage;
-    const newMedia = shuffled.slice(startIndex, endIndex);
+    const newMedia = filteredMedia.slice(startIndex, endIndex);
     
     setDisplayedMedia(prev => [...prev, ...newMedia]);
     setCurrentPage(nextPage);
@@ -168,7 +166,7 @@ export function PortfolioGallery() {
   }
 
   return (
-    <section className="relative py-0 bg-background">
+    <section id="portfolio-gallery" className="relative py-0 bg-background">
       {/* Gradient overlay at top */}
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
       
@@ -216,48 +214,57 @@ export function PortfolioGallery() {
           </div>
         </div>
         
-        <div 
-          ref={galleryRef}
-          className="columns-2 sm:columns-3 lg:columns-4 gap-2 md:gap-3"
-        >
-          {displayedMedia.map((media, index) => (
-            <div
-              key={`${media.id}-${index}`}
-              className="gallery-item relative mb-2 md:mb-3 break-inside-avoid cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:z-10 group"
-              onClick={() => openLightbox(index)}
-            >
-              <img
-                src={media.imageurl}
-                alt={media.caption}
-                className="w-full h-auto rounded-lg"
-                loading="lazy"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-              {media.type === 'video' && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg">
-                  <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
-                    <Play className="w-8 h-8 text-gray-900 ml-1" />
-                  </div>
-                </div>
-              )}
-              {/* Category badge */}
-              <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <span className={`
-                  px-2 py-1 text-xs font-medium rounded-full bg-gradient-to-r 
-                  ${categories.find(cat => cat.id === media.category)?.color || 'from-gray-500 to-slate-500'}
-                  text-white shadow-lg backdrop-blur-sm
-                `}>
-                  {categories.find(cat => cat.id === media.category)?.label || 'General'}
-                </span>
-              </div>
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 rounded-lg">
-                <p className="text-white text-xs font-medium line-clamp-2">{media.caption}</p>
-              </div>
+        <div className="relative">
+          {isFilterTransitioning && (
+            <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-20">
+              <div className="loader w-12 h-12 border-3 border-accent-purple/30 rounded-full border-t-accent-purple animate-spin"></div>
             </div>
-          ))}
+          )}
+          <div
+            ref={galleryRef}
+            className="columns-2 sm:columns-3 lg:columns-4 gap-2 md:gap-3"
+          >
+            {displayedMedia.map((media, index) => (
+              <button
+                key={`${media.id}-${index}`}
+                type="button"
+                aria-label={`View item: ${media.caption}`}
+                className="gallery-item relative mb-2 md:mb-3 break-inside-avoid cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:z-10 group w-full border-none bg-transparent p-0 text-left"
+                onClick={() => openLightbox(index)}
+              >
+                <img
+                  src={media.imageurl}
+                  alt={media.caption}
+                  className="w-full h-auto rounded-lg"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+                {media.type === 'video' && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg">
+                    <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                      <Play className="w-8 h-8 text-gray-900 ml-1" />
+                    </div>
+                  </div>
+                )}
+                {/* Category badge */}
+                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className={`
+                    px-2 py-1 text-xs font-medium rounded-full bg-gradient-to-r
+                    ${categories.find(cat => cat.id === media.category)?.color || 'from-gray-500 to-slate-500'}
+                    text-white shadow-lg backdrop-blur-sm
+                  `}>
+                    {categories.find(cat => cat.id === media.category)?.label || 'General'}
+                  </span>
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 rounded-lg">
+                  <p className="text-white text-xs font-medium line-clamp-2">{media.caption}</p>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
         
         {/* Results count and Load More section */}

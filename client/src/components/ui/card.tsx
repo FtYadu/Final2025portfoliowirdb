@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library and provides a container for content.
  * It is styled using Tailwind CSS for visual presentation.
  */
-/**
- * @fileoverview This file defines the Card component, a standard UI element.
- * This component is based on the shadcn/ui library and provides a container for content.
- * It is styled using Tailwind CSS for visual presentation.
- */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

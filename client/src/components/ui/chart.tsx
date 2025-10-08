@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library and provides a wrapper for displaying charts.
  * It is styled using Tailwind CSS and built with Recharts for functionality.
  */
-/**
- * @fileoverview This file defines the Chart component, a standard UI element.
- * This component is based on the shadcn/ui library and provides a wrapper for displaying charts.
- * It is styled using Tailwind CSS and built with Recharts for functionality.
- */
 "use client"
 
 import * as React from "react"

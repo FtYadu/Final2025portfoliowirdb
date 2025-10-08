@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library and provides a component that displays a short, important message.
  * It is styled using Tailwind CSS and built for accessibility and functionality.
  */
-/**
- * @fileoverview This file defines the Alert component, a standard UI element.
- * This component is based on the shadcn/ui library and provides a component that displays a short, important message.
- * It is styled using Tailwind CSS and built for accessibility and functionality.
- */
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 

@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library and provides a sliding panel.
  * It is styled using Tailwind CSS and built with Vaul for functionality.
  */
-/**
- * @fileoverview This file defines the Drawer component, a standard UI element.
- * This component is based on the shadcn/ui library and provides a sliding panel.
- * It is styled using Tailwind CSS and built with Vaul for functionality.
- */
 "use client"
 
 import * as React from "react"

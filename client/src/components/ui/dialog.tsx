@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library and provides a modal window.
  * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
  */
-/**
- * @fileoverview This file defines the Dialog component, a standard UI element.
- * This component is based on the shadcn/ui library and provides a modal window.
- * It is styled using Tailwind CSS and built with Radix UI for accessibility and functionality.
- */
 "use client"
 
 import * as React from "react"

@@ -3,11 +3,6 @@
  * This component is based on the shadcn/ui library for displaying data in a table.
  * It is styled using Tailwind CSS for visual presentation.
  */
-/**
- * @fileoverview This file defines the Table component, a standard UI element.
- * This component is based on the shadcn/ui library for displaying data in a table.
- * It is styled using Tailwind CSS for visual presentation.
- */
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
